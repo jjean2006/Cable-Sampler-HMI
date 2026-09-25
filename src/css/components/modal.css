@@ -1,0 +1,127 @@
+/* ==========================================================================
+   Modal Dialog & Custom Radio Controls
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 12, 16, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  width: 480px;
+  max-width: 90vw;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px);
+  transition: transform var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.show .modal-card {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-close-modal:hover {
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-card);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: var(--bg-app);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+/* Modal-Scoped Radio Label Overrides */
+.modal-card .radio-label,
+.modal-overlay .radio-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.modal-card .radio-label input,
+.modal-overlay .radio-label input {
+  display: none;
+}
+
+/* Custom Radio Indicator */
+.radio-custom {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border-subtle);
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.radio-label input:checked + .radio-custom {
+  border-color: var(--text-main);
+}
+
+.radio-label input:checked + .radio-custom::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  background-color: var(--text-main);
+  border-radius: 50%;
+}
+
+.radio-text {
+  font-size: 14px;
+  color: var(--text-main);
+}

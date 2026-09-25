@@ -1,0 +1,55 @@
+/* ==========================================================================
+   CSS Custom Properties (Design Tokens)
+   ========================================================================== */
+:root {
+  /* Typography */
+  --font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Theme Palette */
+  --bg-app: #1E222B;
+  --bg-sidebar: #14171E;
+  --bg-sidebar-hover: #1E222B;
+  --bg-sidebar-active: #272C38;
+  --bg-viewport: #1E222B;
+  --bg-card: #272C38;
+  --bg-card-hover: #383E4E;
+  --bg-card-inner: #272C38;
+
+  /* Borders & Dividers */
+  --border-subtle: #383E4E;
+  --border-card: #383E4E;
+  --border-focus: #F1F3F5;
+  --border-blueprint: #383E4E;
+
+  /* Text Colors */
+  --text-main: #F1F3F5;
+  --text-sub: #949DAE;
+  --text-muted: #949DAE;
+  --text-dim: #949DAE;
+
+  /* Fallback Semantic Colors mapped to allowed palette */
+  --color-primary: #F1F3F5;
+  --color-primary-glow: #272C38;
+  --color-primary-dark: #F1F3F5;
+  --color-success: #10B981;
+  --color-success-bg: rgba(16, 185, 129, 0.15);
+  --color-danger: #EF4444;
+  --color-danger-bg: rgba(239, 68, 68, 0.15);
+  --color-warning: #F59E0B;
+  --color-warning-bg: rgba(245, 158, 11, 0.15);
+  --color-info: #3B82F6;
+  --color-info-bg: rgba(59, 130, 246, 0.15);
+
+  /* Layout Constants */
+  --sidebar-width: 210px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --header-height: 58px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}

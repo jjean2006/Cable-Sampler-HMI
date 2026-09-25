@@ -1,0 +1,247 @@
+/* ==========================================================================
+   Workflow Stages & Substeps Breakdown
+   ========================================================================== */
+
+.workflow-card {
+  margin-top: 8px;
+}
+
+.workflow-controls {
+  display: flex;
+  gap: 8px;
+}
+
+/* Top Stages Pipeline Horizontal */
+.stages-pipeline {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-card-inner);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.pipeline-stage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 170px;
+}
+
+.stage-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  background-color: var(--bg-card);
+  color: var(--text-muted);
+  border: 2px solid var(--border-card);
+  transition: all var(--transition-fast);
+}
+
+.pipeline-stage.completed .stage-step-num {
+  background-color: var(--color-success);
+  color: var(--bg-app);
+  border-color: var(--color-success);
+}
+
+.pipeline-stage.active .stage-step-num {
+  background-color: var(--color-primary);
+  color: var(--bg-app);
+  border-color: var(--border-card);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stage-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.stage-status-text {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.pipeline-stage.active .stage-status-text {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.pipeline-stage.completed .stage-status-text {
+  color: var(--color-success);
+}
+
+.pipeline-connector {
+  height: 2px;
+  background-color: var(--border-card);
+  flex: 0 0 40px;
+  margin: 0 8px;
+}
+
+.pipeline-connector.completed {
+  background-color: var(--color-success);
+}
+
+/* Step-by-Step Breakdown Grid */
+.workflow-steps-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.stage-detail-block {
+  background-color: var(--bg-card-inner);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: border-color var(--transition-fast);
+}
+
+.stage-detail-block.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stage-detail-block.completed {
+  border-color: var(--border-card);
+}
+
+.stage-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stage-pill {
+  font-size: 10px;
+  font-weight: 700;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.stage-detail-block.active .stage-pill {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.stage-block-header h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  flex: 1;
+  margin: 0 8px;
+}
+
+.status-tag {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.status-tag.success {
+  background-color: var(--color-success-bg);
+  color: var(--text-main);
+}
+
+.status-tag.active {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.status-tag.pending {
+  background-color: var(--bg-card);
+  color: var(--text-muted);
+}
+
+.substeps-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.substep {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 8px 8px;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  gap: 8px;
+}
+
+.substep.active {
+  background-color: var(--bg-card);
+  border-left: 2px solid var(--color-primary);
+}
+
+.substep-code {
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 24px;
+}
+
+.substep.active .substep-code {
+  color: var(--color-info);
+}
+
+.substep-desc {
+  flex: 1;
+  color: var(--text-sub);
+}
+
+.substep-desc em {
+  font-style: normal;
+  color: var(--text-main);
+  font-size: 10px;
+}
+
+.substep-badge {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.substep-badge.done {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.substep-badge.active-spin {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+@keyframes pulse-step {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.substep-badge.pending {
+  background-color: var(--bg-card);
+  color: var(--text-dim);
+}

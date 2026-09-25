@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CableSampler Adversarial Stress & Boundary Test Runner (Tier 5)</title>
+  <style>
+    :root {
+      --bg-dark: #0f131a;
+      --bg-card: #181d27;
+      --bg-card-sub: #1f2633;
+      --border: #2a3447;
+      --text: #e2e8f0;
+      --text-muted: #8b9bb4;
+      --pass: #10b981;
+      --pass-bg: rgba(16, 185, 129, 0.12);
+      --fail: #ef4444;
+      --fail-bg: rgba(239, 68, 68, 0.12);
+      --running: #3b82f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+      background: var(--bg-dark);
+      color: var(--text);
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+
+    .summary-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 18px;
+      min-width: 140px;
+    }
+
+    .stat-label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+    .stat-value { font-size: 24px; font-weight: 700; margin-top: 4px; font-family: monospace; }
+    .stat-value.pass { color: var(--pass); }
+    .stat-value.fail { color: var(--fail); }
+
+    #test-log {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .test-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-family: monospace;
+    }
+
+    .test-item.pass { border-left: 4px solid var(--pass); }
+    .test-item.fail { border-left: 4px solid var(--fail); background: var(--fail-bg); }
+
+    .test-info { display: flex; align-items: center; gap: 12px; }
+    .test-tier {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--bg-card-sub);
+      color: var(--text-muted);
+    }
+    .test-status { font-weight: 700; }
+    .test-status.PASS { color: var(--pass); }
+    .test-status.FAIL { color: var(--fail); }
+
+    .test-error {
+      color: var(--fail);
+      font-size: 12px;
+      margin-top: 4px;
+      padding-left: 36px;
+    }
+
+    #app-frame {
+      width: 1280px;
+      height: 800px;
+      position: absolute;
+      left: -9999px;
+      top: -9999px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>CableSampler Tier 5 Adversarial Stress & Boundary Suite</h1>
+      <p style="color: var(--text-muted); font-size: 12px; margin-top: 2px;">
+        Challenger 1 Empirical Verification: Rapid mutations, boundary attacks, multi-batch loops, storage corruption, and race conditions
+      </p>
+    </div>
+    <div id="suite-status" style="font-size: 14px; font-weight: 700; color: var(--running);">
+      INITIALIZING...
+    </div>
+  </header>
+
+  <div class="summary-bar">
+    <div class="stat-card">
+      <div class="stat-label">Total Tests</div>
+      <div class="stat-value" id="stat-total">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Passed</div>
+      <div class="stat-value pass" id="stat-passed">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Failed</div>
+      <div class="stat-value fail" id="stat-failed">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Duration</div>
+      <div class="stat-value" id="stat-duration">0 ms</div>
+    </div>
+  </div>
+
+  <div id="test-log"></div>
+
+  <!-- Target Container for Headless DOM Scraping -->
+  <div id="test-results" data-status="running" data-total="0" data-passed="0" data-failed="0"></div>
+
+  <iframe id="app-frame" src="/index.html"></iframe>
+
+  <script type="module" src="./stress_suite.js"></script>
+</body>
+</html>
