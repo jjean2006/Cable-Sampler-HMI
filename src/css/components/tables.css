@@ -1,0 +1,192 @@
+/* ==========================================================================
+   Tables (Queue & History), Filters & Statuses
+   ========================================================================== */
+
+.table-card {
+  margin-top: 16px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.hmi-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+
+.hmi-table th {
+  background-color: var(--bg-card-inner);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.hmi-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-card);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.hmi-table tbody tr:hover {
+  background-color: var(--bg-card);
+}
+
+.job-name-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.job-code {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.job-desc,
+.job-subdesc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.table-standard-pill {
+  display: inline-block;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-card);
+}
+
+.highlight-time {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.priority-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.priority-badge.high {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-bg);
+}
+
+.priority-badge.normal {
+  background-color: var(--color-success-bg);
+  color: var(--text-main);
+  border: 1px solid var(--color-success-bg);
+}
+
+.priority-badge.low {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+  border: 1px solid var(--color-info-bg);
+}
+
+.table-action-btn {
+  background-color: var(--bg-card);
+  color: var(--text-sub);
+  border: 1px solid var(--border-card);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  margin-right: 4px;
+  transition: all var(--transition-fast);
+}
+
+.table-action-btn:hover {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.table-action-btn.delete:hover {
+  background-color: var(--bg-card);
+  border-color: var(--border-card);
+  color: var(--text-main);
+}
+
+/* --------------------------------------------------------------------------
+   History Status Cells & Outcome SVGs
+   -------------------------------------------------------------------------- */
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.status-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.status-label.success {
+  color: var(--text-main);
+}
+
+.status-label.failure {
+  color: var(--color-danger);
+}
+
+.text-success {
+  color: var(--color-success) !important;
+}
+
+.text-danger {
+  color: var(--color-danger) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* History Filter Buttons */
+.filter-btn-group {
+  display: flex;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.btn-filter {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-filter.active {
+  background-color: var(--bg-sidebar-active);
+  color: var(--text-main);
+  font-weight: 600;
+}

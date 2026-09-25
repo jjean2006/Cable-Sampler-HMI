@@ -1,0 +1,22 @@
+/* ==========================================================================
+   Cable Specimen Producer — Modular Stylesheet Manifest
+   ========================================================================== */
+
+/* 1. Base Layer: Tokens, Fonts, Resets */
+@import './base/variables.css';
+@import './base/reset.css';
+
+/* 2. Layout Layer: Containers, Sidebar, Sections */
+@import './layout/container.css';
+@import './layout/sidebar.css';
+@import './layout/section.css';
+
+/* 3. Component Layer: Buttons, Cards, Workflow, Tables, Forms, Modals */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/workflow.css';
+@import './components/tables.css';
+@import './components/forms.css';
+@import './components/modal.css';
+@import './components/toast.css';
+@import './components/auth.css';
