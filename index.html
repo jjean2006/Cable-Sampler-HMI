@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cable Specimen Producer — HMI Dashboard</title>
+  
+  <!-- Roboto and Roboto Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Authentication Overlay -->
+    <div class="auth-overlay" id="auth-screen">
+      <div class="auth-card">
+        <div class="auth-header">
+          <svg class="brand-logo" width="48" height="48" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="14" stroke="var(--text-main)" stroke-width="2"/>
+            <circle cx="16" cy="11" r="3" fill="var(--text-main)"/>
+            <circle cx="11.5" cy="19" r="3" fill="var(--text-main)"/>
+            <circle cx="20.5" cy="19" r="3" fill="var(--text-main)"/>
+          </svg>
+          <h2>System Locked</h2>
+          <p class="text-muted" style="margin-top: 4px; font-size: 13px;">Authentication required to access machine controls.</p>
+        </div>
+        <div class="auth-body">
+          <div class="form-group">
+            <label class="form-label">Operator ID</label>
+            <input type="text" class="form-control" id="auth-operator-id" placeholder="e.g. OP-1042" autocomplete="off">
+          </div>
+          <div class="form-group" style="margin-top: 16px;">
+            <label class="form-label">PIN</label>
+            <input type="password" class="form-control" id="auth-pin" placeholder="••••" autocomplete="off">
+          </div>
+          <div id="auth-error" style="color: var(--color-danger); font-size: 12px; margin-top: 12px; display: none;">Invalid Operator ID or PIN.</div>
+        </div>
+        <div class="auth-footer" style="margin-top: 24px;">
+          <button class="btn btn-primary" id="btn-login" style="width: 100%; justify-content: center; padding: 12px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; letter-spacing: 1px;">UNLOCK SYSTEM</button>
+        </div>
+      </div>
+    </div>
+
+  <div class="hmi-container">
+    
+    <!-- Top System Bar -->
+    
+
+    <!-- Main Workspace Layout -->
+    <div class="hmi-main-layout">
+      
+      <!-- Left Navigation Sidebar matching uiprototype.png -->
+      <aside class="hmi-sidebar" aria-label="Navigation Menu">
+
+        <div class="sidebar-brand">
+          <svg class="brand-logo" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+            <circle cx="16" cy="16" r="14" stroke="var(--text-main)" stroke-width="2"/>
+            <circle cx="16" cy="11" r="3" fill="var(--text-main)"/>
+            <circle cx="11.5" cy="19" r="3" fill="var(--text-main)"/>
+            <circle cx="20.5" cy="19" r="3" fill="var(--text-main)"/>
+          </svg>
+          <div class="brand-text" style="display: flex; flex-direction: column; justify-content: center;">
+            <h2 class="brand-title">Cable sampler</h2>
+          </div>
+        </div>
+
+        <nav class="nav-menu" id="main-nav">
+          <div class="sidebar-actions" style="position: relative; z-index: 2; padding: 0 20px 16px 0; margin-bottom: 8px; border-bottom: 1px solid var(--border-card); display: flex; flex-direction: column; gap: 8px; width: 100%;">
+            <button class="btn btn-primary" id="btn-sidebar-create" style="border-radius: 100px; width: 100%; justify-content: center; font-size: 14px; padding: 12px; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              Create Job
+            </button>
+          </div>
+          
+          <!-- 1. Current Job -->
+          <button class="nav-item active" data-target="current-job" id="nav-current-job">
+            <span class="nav-icon-wrapper">
+              <img src="assets/currentjob.svg" alt="Current Job" class="nav-icon">
+            </span>
+            <span class="nav-label">Current Job</span>
+            
+          </button>
+
+          <!-- 2. Queue -->
+          <button class="nav-item" data-target="queue" id="nav-queue">
+            <span class="nav-icon-wrapper">
+              <img src="assets/queue.svg" alt="Queue" class="nav-icon">
+            </span>
+            <span class="nav-label">Queue</span>
+            
+          </button>
+
+          <!-- 3. History -->
+          <button class="nav-item" data-target="history" id="nav-history">
+            <span class="nav-icon-wrapper">
+              <img src="assets/history.svg" alt="History" class="nav-icon">
+            </span>
+            <span class="nav-label">History</span>
+            
+          </button>
+
+          <!-- 4. Settings -->
+          <button class="nav-item" data-target="settings" id="nav-settings">
+            <span class="nav-icon-wrapper">
+              <img src="assets/settings.svg" alt="Settings" class="nav-icon">
+            </span>
+            <span class="nav-label">Settings</span>
+            
+          </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-status">
+            <span class="status-indicator-dot"></span>
+            <span class="mono text-muted">Active, Connected</span>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Main Content Stage Area (Blue highlight area in uiprototype.png) -->
+      <main class="hmi-content-viewport" id="content-viewport">
+
+        <!-- ======================================================== -->
+        <!-- SECTION 1: CURRENT JOB                                    -->
+        <!-- ======================================================== -->
+        <section class="hmi-section active" id="section-current-job" aria-labelledby="heading-current-job">
+          
+          <!-- Section Title Bar -->
+          <div class="section-header">
+            <div class="section-title-group">
+              <img src="assets/currentjob.svg" alt="Current Job Icon" class="section-icon">
+              <div>
+                <h1 id="heading-current-job" class="section-title">Current Job</h1>
+                <p class="section-subtitle">Monitor current execution sequence.</p>
+              </div>
+            </div>
+            <div class="section-header-badges">
+              <span class="badge badge-primary mono" id="current-job-id">JOB-2026-0842</span>
+              <span class="badge badge-success" id="machine-state-badge">PROCESSING</span>
+            </div>
+          </div>
+
+          <!-- Top Job Metadata Grid -->
+          <div class="job-meta-grid">
+            
+            <!-- Sample Standards Card -->
+            <div class="card meta-card" style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="card-caption">ACTIVE SAMPLE TYPE</div>
+              <div class="sample-types-container" style="margin-top: 4px;">
+                <div class="sample-type-row">
+                  <span class="sample-name highlight-text" id="sample-standard-primary" style="font-size: 20px;">IS 10810 (Part 7)</span>
+                </div>
+                <div class="sample-type-desc" style="font-size: 13px; margin-top: 6px;">Hot Set Test Specimen (XLPE Core)</div>
+              </div>
+            </div>
+
+            <!-- Progress & Cycle Times Card -->
+            <div class="card meta-card">
+              <div class="card-caption">PROGRESS & ESTIMATED TIME</div>
+              <div class="progress-headline">
+                <span class="progress-percent mono" id="job-progress-percent">68%</span>
+                <span class="progress-eta-text">ETA: <strong class="mono" id="job-eta-time">01m 15s</strong></span>
+              </div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="job-progress-fill" style="width: 68%;"></div>
+              </div>
+              <div class="time-metrics-row">
+                <div class="metric-pair">
+                  <span class="metric-lbl">Elapsed Cycle</span>
+                  <span class="metric-val mono" id="job-elapsed-time">02m 45s</span>
+                </div>
+                <div class="metric-pair">
+                  <span class="metric-lbl">Est. Total Cycle</span>
+                  <span class="metric-val mono" id="job-total-time">04m 00s</span>
+                </div>
+                <div class="metric-pair">
+                  <span class="metric-lbl">Specimens</span>
+                  <span class="metric-val mono" id="job-specimen-count">4 / 6 Prepared</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sample Measurements Card -->
+            <div class="card meta-card">
+              <div class="card-caption">SAMPLE DIMENSIONS & PARAMETERS</div>
+              <div class="telemetry-mini-grid" style="margin-top: 12px;">
+                <div class="mini-telemetry">
+                  <span class="lbl">Outer diameter</span>
+                  <span class="val mono" id="sensor-od">14.82 mm</span>
+                </div>
+                <div class="mini-telemetry">
+                  <span class="lbl">Blade Depth</span>
+                  <span class="val mono" id="sensor-depth">1.25 mm</span>
+                </div>
+                <div class="mini-telemetry">
+                  <span class="lbl">Clamping Force</span>
+                  <span class="val mono" id="sensor-clamp">3.2 bar</span>
+                </div>
+                <div class="mini-telemetry">
+                  <span class="lbl">Feed Speed</span>
+                  <span class="val mono" id="sensor-speed">45 mm/s</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Main Workflow Stages Visualization -->
+          <div class="card workflow-card">
+            <div class="card-header-row">
+              <div class="card-caption">STAGE</div>
+              <div class="workflow-controls">
+                <button class="btn btn-sm btn-noisy-stop" id="btn-pause-job"><span>STOP</span></button>
+              </div>
+            </div>
+
+            <!-- Sequential Stages Tracker (Top Pipeline) -->
+            <div class="stages-pipeline">
+              
+              <div class="pipeline-stage completed" id="stage-col-1">
+                <div class="stage-step-num mono">1</div>
+                <div class="stage-info">
+                  <span class="stage-title">Stage 1: Test & Parameter Setup</span>
+                  <span class="stage-status-text">Completed</span>
+                </div>
+              </div>
+              
+              <div class="pipeline-connector completed" id="connector-1"></div>
+
+              <div class="pipeline-stage completed" id="stage-col-2">
+                <div class="stage-step-num mono">2</div>
+                <div class="stage-info">
+                  <span class="stage-title">Stage 2: Cable Preparation</span>
+                  <span class="stage-status-text">Completed</span>
+                </div>
+              </div>
+
+              <div class="pipeline-connector completed" id="connector-2"></div>
+
+              <div class="pipeline-stage active" id="stage-col-3">
+                <div class="stage-step-num mono">3</div>
+                <div class="stage-info">
+                  <span class="stage-title">Stage 3: Cutting & Extraction</span>
+                  <span class="stage-status-text">In Progress (Step 3.2)</span>
+                </div>
+              </div>
+
+              <div class="pipeline-connector" id="connector-3"></div>
+
+              <div class="pipeline-stage pending" id="stage-col-4">
+                <div class="stage-step-num mono">4</div>
+                <div class="stage-info">
+                  <span class="stage-title">Stage 4: Finishing & Output</span>
+                  <span class="stage-status-text">Pending</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Step-by-Step Breakdown Accordion/Grid -->
+            <div class="workflow-steps-breakdown">
+              
+              <!-- Stage 1 Details -->
+              <div class="stage-detail-block completed" data-stage="1">
+                <div class="stage-block-header">
+                  <span class="stage-pill mono">STAGE 1</span>
+                  <h3>Test and Parameter Setup</h3>
+                  <span class="status-tag success">Completed</span>
+                </div>
+                <ul class="substeps-list">
+                  <li class="substep done">
+                    <span class="substep-code mono">1.1</span>
+                    <span class="substep-desc">Operator Selection (Cable Type &amp; Test Standard)</span>
+                    <span class="substep-badge done">Passed</span>
+                  </li>
+                  <li class="substep done">
+                    <span class="substep-code mono">1.2</span>
+                    <span class="substep-desc">Recipe Loading</span>
+                    <span class="substep-badge done">Passed</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Stage 2 Details -->
+              <div class="stage-detail-block completed" data-stage="2">
+                <div class="stage-block-header">
+                  <span class="stage-pill mono">STAGE 2</span>
+                  <h3>Cable Preparation</h3>
+                  <span class="status-tag success">Completed</span>
+                </div>
+                <ul class="substeps-list">
+                  <li class="substep done">
+                    <span class="substep-code mono">2.1</span>
+                    <span class="substep-desc">Automated Feeding</span>
+                    <span class="substep-badge done">Feed OK</span>
+                  </li>
+                  <li class="substep done">
+                    <span class="substep-code mono">2.2</span>
+                    <span class="substep-desc">Cable Detection</span>
+                    <span class="substep-badge done">Detected</span>
+                  </li>
+                  <li class="substep done">
+                    <span class="substep-code mono">2.3</span>
+                    <span class="substep-desc">Diameter Sensing</span>
+                    <span class="substep-badge done">14.82 mm</span>
+                  </li>
+                  <li class="substep done">
+                    <span class="substep-code mono">2.4</span>
+                    <span class="substep-desc">Blade Depth Adjustment</span>
+                    <span class="substep-badge done">1.25 mm</span>
+                  </li>
+                  <li class="substep done">
+                    <span class="substep-code mono">2.5</span>
+                    <span class="substep-desc">Clamping and Positioning</span>
+                    <span class="substep-badge done">Clamped</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Stage 3 Details -->
+              <div class="stage-detail-block active" data-stage="3">
+                <div class="stage-block-header">
+                  <span class="stage-pill mono">STAGE 3</span>
+                  <h3>Cutting and Extraction</h3>
+                  <span class="status-tag active">Active Stage</span>
+                </div>
+                <ul class="substeps-list">
+                  <li class="substep done">
+                    <span class="substep-code mono">3.1</span>
+                    <span class="substep-desc">Outer Sheath Stripping</span>
+                    <span class="substep-badge done">Stripped</span>
+                  </li>
+                  <li class="substep active">
+                    <span class="substep-code mono">3.2</span>
+                    <span class="substep-desc">Insulation Tube Extraction</span>
+                    <span class="substep-badge active-spin">In Progress...</span>
+                  </li>
+                  <li class="substep pending">
+                    <span class="substep-code mono">3.3</span>
+                    <span class="substep-desc">Dumbbell Specimen Cutting</span>
+                    <span class="substep-badge pending">Queued</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Stage 4 Details -->
+              <div class="stage-detail-block pending" data-stage="4">
+                <div class="stage-block-header">
+                  <span class="stage-pill mono">STAGE 4</span>
+                  <h3>Finishing and Output</h3>
+                  <span class="status-tag pending">Pending</span>
+                </div>
+                <ul class="substeps-list">
+                  <li class="substep pending">
+                    <span class="substep-code mono">4.1</span>
+                    <span class="substep-desc">Gauge Line Marking</span>
+                    <span class="substep-badge pending">Queued</span>
+                  </li>
+                  <li class="substep pending">
+                    <span class="substep-code mono">4.2</span>
+                    <span class="substep-desc">Tray Ejection <em class="muted-note">(triggers Next Specimen Loop back to 2.1)</em></span>
+                    <span class="substep-badge pending">Queued</span>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ======================================================== -->
+        <!-- SECTION 2: JOB QUEUE                                      -->
+        <!-- ======================================================== -->
+        <section class="hmi-section" id="section-queue" aria-labelledby="heading-queue">
+          
+          <div class="section-header">
+            <div class="section-title-group">
+              <img src="assets/queue.svg" alt="Job Queue Icon" class="section-icon">
+              <div>
+                <h1 id="heading-queue" class="section-title">Job Queue</h1>
+                <p class="section-subtitle">Manage queued jobs.</p>
+              </div>
+            </div>
+            <div class="section-header-badges">
+              <span class="badge badge-info mono" id="queue-count-badge">4 Jobs Queued</span>
+              
+            </div>
+          </div>
+
+          <!-- Queue Overview Stats Cards -->
+          <div class="queue-stats-row">
+            <div class="card stat-card">
+              <span class="stat-caption">QUEUED RUNTIME</span>
+              <span class="stat-val mono" id="queue-total-runtime">18m 30s</span>
+              <span class="stat-sub">Estimated backlog</span>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-caption">NEXT DISPATCH</span>
+              <span class="stat-val mono" id="queue-next-dispatch">19:30:15</span>
+              <span class="stat-sub">After current batch completes</span>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-caption">STANDARDS IN QUEUE</span>
+              <span class="stat-val mono">IS 10810 / IS 7098</span>
+              <span class="stat-sub">XLPE &amp; PVC sample recipes</span>
+            </div>
+          </div>
+
+          <!-- Queue Table -->
+          <div class="card table-card">
+            <div class="card-caption">CURRENT EXECUTION SCHEDULE</div>
+            <div class="table-responsive">
+              <table class="hmi-table" id="queue-table">
+                <thead>
+                  <tr>
+                    <th>Seq</th>
+                    <th>Job ID &amp; Name</th>
+                    <th>Standard Specification</th>
+                    <th>Specimens</th>
+                    <th>Est. Start Time</th>
+                    <th>Est. Duration</th>
+                    <th>Priority</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="queue-table-body">
+                  <tr>
+                    <td class="mono">#1</td>
+                    <td>
+                      <div class="job-name-cell">
+                        <strong class="job-code mono">JOB-2026-0843</strong>
+                        <span class="job-desc">XLPE Sheath Dumbbell Production</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="table-standard-pill mono">IS 7098 (Parts 1 &amp; 2)</span>
+                    </td>
+                    <td class="mono">6 pcs</td>
+                    <td><span class="mono highlight-time">19:30:15 (+01m 15s)</span></td>
+                    <td class="mono">04m 00s</td>
+                    <td><span class="priority-badge high">High</span></td>
+                    <td>
+                      <button class="table-action-btn" title="Move Down" onclick="window.HMI.moveQueueItem(0, 1)">↓</button>
+                      <button class="table-action-btn delete" title="Cancel Job" onclick="window.HMI.deleteQueueItem(0)">✕</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#2</td>
+                    <td>
+                      <div class="job-name-cell">
+                        <strong class="job-code mono">JOB-2026-0844</strong>
+                        <span class="job-desc">Tensile &amp; Elongation Hot Set Sample</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="table-standard-pill mono">IS 10810 (Parts 2, 7, 33)</span>
+                    </td>
+                    <td class="mono">10 pcs</td>
+                    <td><span class="mono">19:34:15 (+05m 15s)</span></td>
+                    <td class="mono">06m 15s</td>
+                    <td><span class="priority-badge normal">Normal</span></td>
+                    <td>
+                      <button class="table-action-btn" title="Move Up" onclick="window.HMI.moveQueueItem(1, -1)">↑</button>
+                      <button class="table-action-btn" title="Move Down" onclick="window.HMI.moveQueueItem(1, 1)">↓</button>
+                      <button class="table-action-btn delete" title="Cancel Job" onclick="window.HMI.deleteQueueItem(1)">✕</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#3</td>
+                    <td>
+                      <div class="job-name-cell">
+                        <strong class="job-code mono">JOB-2026-0845</strong>
+                        <span class="job-desc">Single-Core Insulation Stripping</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="table-standard-pill mono">IS 7098 (Part 1)</span>
+                    </td>
+                    <td class="mono">4 pcs</td>
+                    <td><span class="mono">19:40:30 (+11m 30s)</span></td>
+                    <td class="mono">03m 00s</td>
+                    <td><span class="priority-badge normal">Normal</span></td>
+                    <td>
+                      <button class="table-action-btn" title="Move Up" onclick="window.HMI.moveQueueItem(2, -1)">↑</button>
+                      <button class="table-action-btn" title="Move Down" onclick="window.HMI.moveQueueItem(2, 1)">↓</button>
+                      <button class="table-action-btn delete" title="Cancel Job" onclick="window.HMI.deleteQueueItem(2)">✕</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="mono">#4</td>
+                    <td>
+                      <div class="job-name-cell">
+                        <strong class="job-code mono">JOB-2026-0846</strong>
+                        <span class="job-desc">Water Absorption Disc Sample Cut</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="table-standard-pill mono">IS 10810 (Part 33)</span>
+                    </td>
+                    <td class="mono">8 pcs</td>
+                    <td><span class="mono">19:43:30 (+14m 30s)</span></td>
+                    <td class="mono">05m 15s</td>
+                    <td><span class="priority-badge low">Low</span></td>
+                    <td>
+                      <button class="table-action-btn" title="Move Up" onclick="window.HMI.moveQueueItem(3, -1)">↑</button>
+                      <button class="table-action-btn delete" title="Cancel Job" onclick="window.HMI.deleteQueueItem(3)">✕</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ======================================================== -->
+        <!-- SECTION 3: JOB HISTORY                                    -->
+        <!-- ======================================================== -->
+        <section class="hmi-section" id="section-history" aria-labelledby="heading-history">
+          
+          <div class="section-header">
+            <div class="section-title-group">
+              <img src="assets/history.svg" alt="Job History Icon" class="section-icon">
+              <div>
+                <h1 id="heading-history" class="section-title">Job History</h1>
+                <p class="section-subtitle">Execution logs, verification outcome &amp; specimen quality records</p>
+              </div>
+            </div>
+            <div class="section-header-badges">
+              <div class="filter-btn-group">
+                <button class="btn btn-sm btn-filter active" data-filter="all">All Jobs</button>
+                <button class="btn btn-sm btn-filter" data-filter="success">Successful</button>
+                <button class="btn btn-sm btn-filter" data-filter="failure">Failed</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- History Performance KPI Row -->
+          <div class="history-kpi-row">
+            <div class="card stat-card">
+              <span class="stat-caption">TOTAL COMPLETED</span>
+              <span class="stat-val mono">142</span>
+              <span class="stat-sub">Recorded production cycles</span>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-caption">SUCCESS RATE</span>
+              <span class="stat-val mono text-success">95.8%</span>
+              <span class="stat-sub">136 passed / 6 failed</span>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-caption">AVG SPECIMEN CYCLE</span>
+              <span class="stat-val mono">03m 48s</span>
+              <span class="stat-sub">Across IS 10810 / IS 7098</span>
+            </div>
+          </div>
+
+          <!-- History Table with requested SVGs for Success / Failure -->
+          <div class="card table-card">
+            <div class="card-caption">RECENT PRODUCTION LOGS</div>
+            <div class="table-responsive">
+              <table class="hmi-table" id="history-table">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Job Name &amp; ID</th>
+                    <th>Sample Standard</th>
+                    <th>Specimens</th>
+                    <th>Completed At</th>
+                    <th>Duration</th>
+                    <th>Operator</th>
+                    <th>Diagnostic Summary</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-body">
+                  
+                  <!-- Row 1: Success -->
+                  <tr class="history-row status-success-row" data-status="success">
+                    <td>
+                      <div class="status-cell success">
+                        <img src="assets/success-circle.svg" alt="Success: Green tick surrounded by circle" class="status-icon" width="22" height="22">
+                        <span class="status-label success">SUCCESS</span>
+                      </div>
+                    </td>
+                    <td>
+                      <strong class="mono job-code">JOB-2026-0841</strong>
+                      <div class="job-subdesc">XLPE Outer Sheath Dumbbell 75mm</div>
+                    </td>
+                    <td><span class="table-standard-pill mono">IS 10810 (Parts 2, 7)</span></td>
+                    <td class="mono">6 / 6 pcs</td>
+                    <td class="mono">19:18:22</td>
+                    <td class="mono">03m 52s</td>
+                    <td>Tech. R. Sharma</td>
+                    <td class="text-muted">All specimens within ±0.02 mm tolerance.</td>
+                  </tr>
+
+                  <!-- Row 2: Success -->
+                  <tr class="history-row status-success-row" data-status="success">
+                    <td>
+                      <div class="status-cell success">
+                        <img src="assets/success-circle.svg" alt="Success: Green tick surrounded by circle" class="status-icon" width="22" height="22">
+                        <span class="status-label success">SUCCESS</span>
+                      </div>
+                    </td>
+                    <td>
+                      <strong class="mono job-code">JOB-2026-0840</strong>
+                      <div class="job-subdesc">IS 7098 Part 2 Dumbbell Cut</div>
+                    </td>
+                    <td><span class="table-standard-pill mono">IS 7098 (Parts 1 &amp; 2)</span></td>
+                    <td class="mono">12 / 12 pcs</td>
+                    <td class="mono">18:54:10</td>
+                    <td class="mono">07m 40s</td>
+                    <td>Tech. R. Sharma</td>
+                    <td class="text-muted">Batch quality verified; tray ejected smoothly.</td>
+                  </tr>
+
+                  <!-- Row 3: Failure -->
+                  <tr class="history-row status-failure-row" data-status="failure">
+                    <td>
+                      <div class="status-cell failure">
+                        <img src="assets/failure-circle.svg" alt="Failure: Red cross surrounded by circle" class="status-icon" width="22" height="22">
+                        <span class="status-label failure">FAILURE</span>
+                      </div>
+                    </td>
+                    <td>
+                      <strong class="mono job-code">JOB-2026-0839</strong>
+                      <div class="job-subdesc">High Voltage XLPE Core Stripping</div>
+                    </td>
+                    <td><span class="table-standard-pill mono">IS 7098 (Part 2)</span></td>
+                    <td class="mono">2 / 6 pcs</td>
+                    <td class="mono">18:22:05</td>
+                    <td class="mono">01m 45s</td>
+                    <td>Tech. A. Mehta</td>
+                    <td class="text-danger">Stage 2.3 OD variance > 1.8mm; blade clamp auto-aborted.</td>
+                  </tr>
+
+                  <!-- Row 4: Success -->
+                  <tr class="history-row status-success-row" data-status="success">
+                    <td>
+                      <div class="status-cell success">
+                        <img src="assets/success-circle.svg" alt="Success: Green tick surrounded by circle" class="status-icon" width="22" height="22">
+                        <span class="status-label success">SUCCESS</span>
+                      </div>
+                    </td>
+                    <td>
+                      <strong class="mono job-code">JOB-2026-0838</strong>
+                      <div class="job-subdesc">Water Absorption Specimen Disc Prep</div>
+                    </td>
+                    <td><span class="table-standard-pill mono">IS 10810 (Part 33)</span></td>
+                    <td class="mono">8 / 8 pcs</td>
+                    <td class="mono">17:48:30</td>
+                    <td class="mono">05m 10s</td>
+                    <td>Tech. A. Mehta</td>
+                    <td class="text-muted">Rotary disc cutter nominal cut; gauge verified.</td>
+                  </tr>
+
+                  <!-- Row 5: Failure -->
+                  <tr class="history-row status-failure-row" data-status="failure">
+                    <td>
+                      <div class="status-cell failure">
+                        <img src="assets/failure-circle.svg" alt="Failure: Red cross surrounded by circle" class="status-icon" width="22" height="22">
+                        <span class="status-label failure">FAILURE</span>
+                      </div>
+                    </td>
+                    <td>
+                      <strong class="mono job-code">JOB-2026-0837</strong>
+                      <div class="job-subdesc">Armoured Sheath Extraction</div>
+                    </td>
+                    <td><span class="table-standard-pill mono">IS 10810 (Part 2)</span></td>
+                    <td class="mono">0 / 4 pcs</td>
+                    <td class="mono">17:15:12</td>
+                    <td class="mono">00m 42s</td>
+                    <td>Tech. A. Mehta</td>
+                    <td class="text-danger">Stage 2.1 Feeding slippage detected on feeder roller.</td>
+                  </tr>
+
+                  <!-- Row 6: Success -->
+                  <tr class="history-row status-success-row" data-status="success">
+                    <td>
+                      <div class="status-cell success">
+                        <img src="assets/success-circle.svg" alt="Success: Green tick surrounded by circle" class="status-icon" width="22" height="22">
+                        <span class="status-label success">SUCCESS</span>
+                      </div>
+                    </td>
+                    <td>
+                      <strong class="mono job-code">JOB-2026-0836</strong>
+                      <div class="job-subdesc">LT XLPE Sheathed Cable Dumbbell</div>
+                    </td>
+                    <td><span class="table-standard-pill mono">IS 7098 (Part 1)</span></td>
+                    <td class="mono">5 / 5 pcs</td>
+                    <td class="mono">16:50:04</td>
+                    <td class="mono">03m 22s</td>
+                    <td>Tech. R. Sharma</td>
+                    <td class="text-muted">Batch test completed with 0 errors.</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ======================================================== -->
+        <!-- SECTION 4: SETTINGS                                       -->
+        <!-- ======================================================== -->
+        <section class="hmi-section" id="section-settings" aria-labelledby="heading-settings">
+          
+          <div class="section-header">
+            <div class="section-title-group">
+              <img src="assets/settings.svg" alt="Settings Icon" class="section-icon">
+              <div>
+                <h1 id="heading-settings" class="section-title">HMI Settings</h1>
+                <p class="section-subtitle">System configuration, language, engineering units &amp; network parameters</p>
+              </div>
+            </div>
+            <div class="section-header-badges">
+              <button class="btn btn-sm btn-secondary" id="btn-reset-settings">Reset Defaults</button>
+              <button class="btn btn-sm btn-primary" id="btn-save-settings">Save All Settings</button>
+            </div>
+          </div>
+
+          <!-- Settings Form Grid -->
+          <form class="settings-grid" id="hmi-settings-form" onsubmit="event.preventDefault(); window.HMI.saveSettings();">
+            
+            <!-- Group 1: Language & Localization -->
+            <div class="card settings-card">
+              <div class="card-caption">LANGUAGE &amp; REGIONAL LOCALIZATION</div>
+              
+              <div class="form-group">
+                <label for="setting-language" class="form-label">System Language</label>
+                <select id="setting-language" class="form-control">
+                  <option value="en" selected>English (US / UK)</option>
+                  <option value="de">Deutsch (German)</option>
+                  <option value="fr">Français (French)</option>
+                  <option value="es">Español (Spanish)</option>
+                  <option value="hi">हिन्दी (Hindi)</option>
+                </select>
+                <span class="form-hint">Controls HMI display language and report exports.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="setting-timezone" class="form-label">Timezone</label>
+                <select id="setting-timezone" class="form-control mono">
+                  <option value="UTC+05:30" selected>IST (UTC+05:30) — New Delhi</option>
+                  <option value="UTC+00:00">UTC (UTC+00:00) — London</option>
+                  <option value="UTC+01:00">CET (UTC+01:00) — Berlin / Paris</option>
+                  <option value="UTC-05:00">EST (UTC-05:00) — New York</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="setting-time-format" class="form-label">Time Display Format</label>
+                <div class="radio-toggle-group">
+                  <label class="radio-label">
+                    <input type="radio" name="timeFormat" value="24" checked> 24-Hour (19:30:00)
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="timeFormat" value="12"> 12-Hour (07:30:00 PM)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 2: Units of Measurement -->
+            <div class="card settings-card">
+              <div class="card-caption">ENGINEERING UNITS &amp; STANDARDS</div>
+              
+              <div class="form-group">
+                <label for="setting-units-system" class="form-label">Measurement Unit System</label>
+                <select id="setting-units-system" class="form-control">
+                  <option value="metric" selected>Metric (mm, °C, bar, mm/s)</option>
+                  <option value="imperial">Imperial (in, °F, psi, in/s)</option>
+                </select>
+                <span class="form-hint">IS 10810 and IS 7098 standards require SI Metric measurements.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="setting-decimal-precision" class="form-label">Gauge Measurement Precision</label>
+                <select id="setting-decimal-precision" class="form-control mono">
+                  <option value="2" selected>0.01 mm (Standard IS 10810)</option>
+                  <option value="3">0.001 mm (High Precision Micrometer)</option>
+                  <option value="1">0.1 mm (Rough Cut)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="setting-pressure-unit" class="form-label">Pneumatic Clamping Unit</label>
+                <select id="setting-pressure-unit" class="form-control mono">
+                  <option value="bar" selected>bar</option>
+                  <option value="kPa">kPa</option>
+                  <option value="psi">psi</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Group 3: Network & SCADA Connectivity -->
+            <div class="card settings-card">
+              <div class="card-caption">NETWORK &amp; SCADA / PLC PROTOCOLS</div>
+              
+              <div class="form-row">
+                <div class="form-group col-6">
+                  <label for="setting-ip-address" class="form-label">Static IP Address</label>
+                  <input type="text" id="setting-ip-address" class="form-control mono" value="192.168.1.120" placeholder="192.168.1.120">
+                </div>
+                <div class="form-group col-6">
+                  <label for="setting-subnet-mask" class="form-label">Subnet Mask</label>
+                  <input type="text" id="setting-subnet-mask" class="form-control mono" value="255.255.255.0" placeholder="255.255.255.0">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-6">
+                  <label for="setting-gateway" class="form-label">Default Gateway</label>
+                  <input type="text" id="setting-gateway" class="form-control mono" value="192.168.1.1" placeholder="192.168.1.1">
+                </div>
+                <div class="form-group col-6">
+                  <label for="setting-port" class="form-label">OPC UA / Modbus Port</label>
+                  <input type="number" id="setting-port" class="form-control mono" value="4840" placeholder="4840">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="setting-protocol" class="form-label">Industrial Bus Protocol</label>
+                <select id="setting-protocol" class="form-control mono">
+                  <option value="opcua" selected>OPC UA (IEC 62541)</option>
+                  <option value="modbus">Modbus TCP / IP (Port 502)</option>
+                  <option value="profinet">PROFINET Industrial Ethernet</option>
+                  <option value="mqtt">MQTT / Sparkplug B Telemetry</option>
+                </select>
+              </div>
+
+              <div class="network-test-action">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-test-network">Test Network Ping</button>
+                <span class="network-status-result mono" id="network-ping-result">Status: Connected (2ms)</span>
+              </div>
+            </div>
+
+            <!-- Group 4: Machine Safety & Operation -->
+            <div class="card settings-card">
+              <div class="card-caption">MACHINE SAFETY &amp; OPERATOR CONTROLS</div>
+              
+              <div class="form-group">
+                <label class="toggle-switch-label">
+                  <input type="checkbox" id="setting-auto-eject" checked>
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text">Auto Tray Ejection upon Specimen Completion (Stage 4.2)</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="toggle-switch-label">
+                  <input type="checkbox" id="setting-safety-door" checked>
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text">Interlock Enclosure Door Safety Guard</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="toggle-switch-label">
+                  <input type="checkbox" id="setting-audio-buzzer" checked>
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text">Audible Buzzer on Cycle End &amp; Faults</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="setting-blade-threshold" class="form-label">Blade Replacement Warning (Cuts)</label>
+                <input type="number" id="setting-blade-threshold" class="form-control mono" value="500" min="50" max="5000">
+                <span class="form-hint">Current blade counter: 142 cuts since last calibration.</span>
+              </div>
+            </div>
+
+          </form>
+
+          <!-- Toast Notification Container -->
+          <div class="toast-notification" id="settings-toast" role="alert" aria-live="polite">
+            <span class="toast-icon">✓</span>
+            <span class="toast-message">Settings saved successfully to persistent HMI storage!</span>
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+    <!-- Job Creation Modal -->
+    <div class="modal-overlay" id="job-creation-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">Create New Job</h3>
+          <button class="btn-close-modal" id="btn-close-modal">✕</button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Target Sample Standard</label>
+            <select class="form-control" id="new-job-standard">
+              <option value="IS 10810 (Part 2)">IS 10810 (Part 2) — Tensile Strength Test</option>
+              <option value="IS 10810 (Part 7)">IS 10810 (Part 7) — Hot Set Test Specimen</option>
+              <option value="IS 10810 (Part 33)">IS 10810 (Part 33) — Water Absorption Test</option>
+              <option value="IS 7098 (Part 1)">IS 7098 (Part 1) — Cables up to 1100V</option>
+              <option value="IS 7098 (Part 2)">IS 7098 (Part 2) — Cables from 3.3kV to 33kV</option>
+            </select>
+          </div>
+
+          <div class="form-row" style="display: flex; gap: 16px; margin-top: 16px;">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Quantity (Specimens)</label>
+              <input type="number" class="form-control" id="new-job-qty" value="6" min="1" max="50">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Execution Priority</label>
+              <select class="form-control" id="new-job-priority">
+                <option value="normal">Normal</option>
+                <option value="high">High</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group" style="margin-top: 16px;">
+            <label class="form-label">Execution Schedule</label>
+            <div class="schedule-options" style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+              <label class="radio-label">
+                <input type="radio" name="job-schedule" value="run" checked>
+                <span class="radio-custom"></span>
+                <span class="radio-text">Run Immediately</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="job-schedule" value="queue-next">
+                <span class="radio-custom"></span>
+                <span class="radio-text">Add Next in Queue (Execute after current)</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="job-schedule" value="queue-last">
+                <span class="radio-custom"></span>
+                <span class="radio-text">Add Last in Queue</span>
+              </label>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <label class="radio-label" style="flex-shrink: 0;">
+                  <input type="radio" name="job-schedule" value="queue-custom">
+                  <span class="radio-custom"></span>
+                  <span class="radio-text">Custom Position:</span>
+                </label>
+                <input type="number" class="form-control" id="new-job-custom-pos" value="2" min="1" max="99" style="width: 80px; padding: 4px 8px;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="btn-cancel-job" style="border-radius: var(--radius-sm);">Cancel</button>
+          <button class="btn btn-primary" id="btn-submit-job" style="color: var(--bg-app); border-radius: var(--radius-sm);">Dispatch Job</button>
+        </div>
+      </div>
+    </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
