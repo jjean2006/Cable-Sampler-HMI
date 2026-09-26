@@ -9,6 +9,7 @@
 import { dom } from './utils/dom.js';
 import { state } from './state/store.js';
 import { formatDuration, formatMSS } from './utils/formatters.js';
+import { initMobile } from './modules/mobile.js';
 import { initAuth } from './modules/auth.js';
 import { switchView, initNavigation } from './modules/navigation.js';
 import {
@@ -88,6 +89,8 @@ export function init() {
   initQueue();
   initHistory();
   initSettings();
+  initMobile();
+
 
   renderWorkflowUI();
   renderQueueTable();
