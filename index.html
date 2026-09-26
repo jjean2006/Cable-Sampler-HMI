@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="src/css/main.css">
+  <link rel="stylesheet" href="src/css/main.css?v=3">
 </head>
 <body>
 
@@ -50,12 +50,56 @@
     
 
     <!-- Main Workspace Layout -->
-    <div class="hmi-main-layout">
+      <header class="hmi-topbar-mobile">
+    <button id="mobile-menu-btn" class="hamburger-btn" aria-label="Toggle Menu">
+      <svg class="hamburger-svg" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line class="line-top" x1="4" y1="6" x2="20" y2="6"></line>
+        <line class="line-middle" x1="4" y1="12" x2="20" y2="12"></line>
+        <line class="line-bottom" x1="4" y1="18" x2="20" y2="18"></line>
+      </svg>
+    </button>
+    
+    <div class="topbar-brand">
+      <svg class="brand-logo" width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="14" stroke="var(--text-main)" stroke-width="2"/>
+        <circle cx="16" cy="11" r="3" fill="var(--text-main)"/>
+        <circle cx="11.5" cy="19" r="3" fill="var(--text-main)"/>
+        <circle cx="20.5" cy="19" r="3" fill="var(--text-main)"/>
+      </svg>
+      <span class="brand-title" style="font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1; transform: translateY(-1px);">CableSampler</span>
+    </div>
+    
+    <nav class="topbar-nav">
+      <button class="nav-item active" data-target="current-job" id="top-nav-current-job">
+        <span class="nav-icon-wrapper"><img src="assets/currentjob.svg" alt="Current Job" class="nav-icon"></span>
+        <span class="nav-label">Current Job</span>
+      </button>
+      <button class="nav-item" data-target="queue" id="top-nav-queue">
+        <span class="nav-icon-wrapper"><img src="assets/queue.svg" alt="Queue" class="nav-icon"></span>
+        <span class="nav-label">Queue</span>
+      </button>
+      <button class="nav-item" data-target="history" id="top-nav-history">
+        <span class="nav-icon-wrapper"><img src="assets/history.svg" alt="History" class="nav-icon"></span>
+        <span class="nav-label">History</span>
+      </button>
+      <button class="nav-item" data-target="settings" id="top-nav-settings">
+        <span class="nav-icon-wrapper"><img src="assets/settings.svg" alt="Settings" class="nav-icon"></span>
+        <span class="nav-label">Settings</span>
+      </button>
+    </nav>
+    
+    <button id="btn-topbar-create" class="btn btn-primary" style="border-radius: 100px; font-size: 14px; font-weight: 600; padding: 8px 16px; gap: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      <span>Create</span>
+    </button>
+  </header>
+  <div class="hmi-main-layout">
       
       <!-- Left Navigation Sidebar matching uiprototype.png -->
       <aside class="hmi-sidebar" aria-label="Navigation Menu">
 
         <div class="sidebar-brand">
+          
           <svg class="brand-logo" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
             <circle cx="16" cy="16" r="14" stroke="var(--text-main)" stroke-width="2"/>
             <circle cx="16" cy="11" r="3" fill="var(--text-main)"/>
@@ -68,13 +112,6 @@
         </div>
 
         <nav class="nav-menu" id="main-nav">
-          <div class="sidebar-actions" style="position: relative; z-index: 2; padding: 0 20px 16px 0; margin-bottom: 8px; border-bottom: 1px solid var(--border-card); display: flex; flex-direction: column; gap: 8px; width: 100%;">
-            <button class="btn btn-primary" id="btn-sidebar-create" style="border-radius: 100px; width: 100%; justify-content: center; font-size: 14px; padding: 12px; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-              Create Job
-            </button>
-          </div>
-          
           <!-- 1. Current Job -->
           <button class="nav-item active" data-target="current-job" id="nav-current-job">
             <span class="nav-icon-wrapper">
@@ -144,6 +181,7 @@
             </div>
           </div>
 
+          <div class="current-job-content-mobile">
           <!-- Top Job Metadata Grid -->
           <div class="job-meta-grid">
             

@@ -163,6 +163,8 @@ export function submitJob() {
 export function initQueue() {
   if (dom.btnAddQueueJob) dom.btnAddQueueJob.addEventListener('click', addQueueJob);
   if (dom.btnSidebarCreate) dom.btnSidebarCreate.addEventListener('click', openModal);
+  const topbarCreate = document.getElementById('btn-topbar-create');
+  if (topbarCreate) topbarCreate.addEventListener('click', openModal);
   if (dom.btnCloseModal) dom.btnCloseModal.addEventListener('click', closeModal);
   if (dom.btnCancelJob) dom.btnCancelJob.addEventListener('click', closeModal);
   if (dom.btnSubmitJob) dom.btnSubmitJob.addEventListener('click', submitJob);

@@ -1,0 +1,377 @@
+
+/* Restore Topbar Brand layout */
+.topbar-brand {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  flex: 1; 
+}
+
+/* Fix logo alignment */
+.topbar-brand .brand-logo {
+  margin-bottom: 0 !important;
+}
+
+/* Hamburger Button in Topbar */
+  .hmi-topbar-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 4000;
+  }
+  #mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+  }
+  #btn-topbar-create {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+
+/* ==========================================================================
+   Mobile Responsive Adjustments (< 1024px)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  /* Layout */
+  .hmi-main-layout {
+    flex-direction: row;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  
+
+  /* Stable Sidebar Layout (Hidden Collapsed) */
+  .hmi-main-layout {
+    display: block; 
+  }
+  
+  .hmi-sidebar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw !important;
+    height: 100%;
+    z-index: 2000;
+    background-color: var(--bg-sidebar);
+    transition: transform 0.3s ease;
+    overflow-x: hidden;
+    transform: translateX(-100%); /* Hidden completely */
+  }
+  
+  .hmi-sidebar.expanded {
+    transform: translateX(0); /* Slides in */
+    box-shadow: 4px 0 24px rgba(0,0,0,0.6); /* Adds a drop shadow over the canvas */
+  }
+  
+  /* Main Content Area */
+  .hmi-content-viewport {
+    margin-left: 0;
+    width: 100% !important;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  /* Make room for the floating hamburger menu */
+  .section-header {
+    padding-left: 0;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 16px;
+  }
+  .section-title-group {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Since it covers 100vw, we can show everything! */
+  .hmi-sidebar:not(.expanded) .brand-text,
+  .hmi-sidebar:not(.expanded) .nav-label,
+  .hmi-sidebar:not(.expanded) .nav-shortcut,
+  .hmi-sidebar:not(.expanded) .sidebar-actions span,
+  .hmi-sidebar:not(.expanded) .sidebar-bottom {
+    /* No need to hide them because the entire sidebar is translated off-screen! */
+  }
+  
+  /* Fix all tab and bg overflow when expanded */
+  .hmi-sidebar .nav-item {
+    width: 100% !important;
+    border-radius: 28px !important;
+    margin: 0 !important;
+  }
+  .hmi-sidebar .nav-menu::before {
+    right: 0 !important;
+    border-radius: 28px !important;
+  }
+  .hmi-sidebar .nav-menu {
+    padding-right: 24px;
+    flex: 0 0 auto;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  
+  /* Reduce gap for mobile */
+  .hmi-section {
+    padding: 16px;
+  }
+
+  /* General Grid Layouts - shrink to 1 column */
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  
+
+  
+  /* Current Job - Specific Layout (Horizontal above cards) */
+  .current-job-content-mobile {
+    display: flex;
+    flex-direction: column-reverse; /* Workflow card first, meta grid second */
+    gap: 16px;
+  }
+
+  #section-current-job .job-meta-grid {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+  }
+
+  #section-current-job .workflow-card {
+    margin-top: 0;
+  }
+
+  /* Compact Horizontal Pipeline */
+  #section-current-job .stages-pipeline {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    padding: 12px 8px;
+    overflow: hidden !important; /* Never scroll */
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  #section-current-job .pipeline-stage {
+    flex: 0 0 auto;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    gap: 4px;
+    margin: 0;
+  }
+  
+  /* Hide the text so the circles can get closer */
+  #section-current-job .stage-info {
+    display: none; 
+  }
+  
+  #section-current-job .pipeline-connector {
+    flex: 1 1 auto; /* Elastic connectors */
+    width: auto !important;
+    min-width: 8px;
+    height: 2px;
+    margin: 0 4px;
+  }
+
+  /* Workflow Steps Breakdown Grid */
+  #section-current-job .workflow-steps-breakdown {
+    display: none; /* Hide subprocesses by default */
+  }
+  
+  /* When revealed via JS */
+  #section-current-job .workflow-steps-breakdown.revealed {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 16px;
+    /* Removed background, border, and padding to prevent double-border with stage-detail-block */
+  }
+
+  /* Only make tables scrollable, not all cards! */
+  .card {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .job-queue-table, .job-history-table, table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  table {
+    min-width: 500px;
+  }
+
+  /* Typography and overflow fixes */
+  * {
+    overflow-wrap: break-word;
+  }
+  
+  .card-caption, .section-title, .sample-type-desc {
+    white-space: normal;
+  }
+  
+  
+
+  /* Make telemetry grid 1 column on mobile to prevent squished text */
+  .telemetry-mini-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stack form rows on mobile */
+  .form-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+
+  /* When revealed via JS, hide all blocks except the targeted one */
+  #section-current-job .workflow-steps-breakdown.revealed .stage-detail-block {
+    display: none;
+  }
+  #section-current-job .workflow-steps-breakdown.revealed .stage-detail-block.show-mobile {
+    display: block;
+  }
+
+  /* White border around the selected stage circle */
+  #section-current-job .pipeline-stage.selected .stage-step-num {
+    border: 2px solid #ffffff !important;
+  }
+
+  /* Hide the "STAGE X" heading pill from the info card */
+  #section-current-job .workflow-steps-breakdown .stage-pill {
+    display: none !important;
+  }
+
+
+}
+
+@media (max-width: 1024px) {
+  /* Make room in the expanded sidebar brand for the floating hamburger */
+  .hmi-sidebar .sidebar-brand {
+    padding-left: 80px !important; 
+  }
+}
+
+@media (max-width: 1024px) {
+  /* Center the badges (like '4 jobs queued') on mobile when they wrap */
+  .section-header-badges {
+    width: 100%;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  /* Hamburger to X Animation */
+  .hamburger-svg {
+    overflow: visible !important;
+  }
+  .hamburger-svg line {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  
+  #mobile-menu-btn.is-active .line-top {
+    transform: translateY(6px) rotate(45deg);
+  }
+  
+  #mobile-menu-btn.is-active .line-middle {
+    opacity: 0;
+  }
+  
+  #mobile-menu-btn.is-active .line-bottom {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+}
+
+@media (max-width: 1024px) {
+  /* Prevent scrolling when sidebar is open */
+  body.no-scroll .hmi-content-viewport {
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  #mobile-menu-btn {
+    visibility: hidden; /* Hide it but keep the layout space */
+  }
+}
+
+/* Desktop Overrides */
+@media (min-width: 1025px) {
+  .hmi-sidebar {
+    display: none !important;
+  }
+  .topbar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex: 1; /* Center tabs */
+  }
+  .topbar-nav .nav-item {
+    width: auto !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    background-color: transparent;
+    color: var(--text-sub);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    transition: all 0.2s ease;
+  }
+  .topbar-nav .nav-item:hover {
+    background-color: var(--bg-sidebar-hover);
+    color: var(--text-main);
+  }
+  .topbar-nav .nav-item.active {
+    background-color: var(--bg-app);
+    color: var(--text-main);
+  }
+  .topbar-nav .nav-icon-wrapper {
+    display: flex;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+  }
+  .topbar-nav .nav-icon {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(0.8);
+  }
+  .topbar-nav .nav-item.active .nav-icon {
+    filter: brightness(0) invert(1);
+  }
+  .topbar-brand {
+    flex: 0 0 auto !important; /* Do not flex 1 on desktop */
+    margin-right: 24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .topbar-nav {
+    display: none !important;
+  }
+}
