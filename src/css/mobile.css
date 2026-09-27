@@ -120,7 +120,7 @@
   .hmi-content-viewport {
     margin-left: 0;
     width: 100% !important;
-    height: 100vh;
+    flex: 1;
     overflow-y: auto;
   }
   
@@ -448,5 +448,28 @@
 @media (max-width: 1024px) {
   .topbar-brand .brand-title {
     display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  /* White circular target ring around the active machine stage on mobile */
+  #section-current-job .pipeline-stage.selected .stage-step-num::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 3px solid var(--border-subtle);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  #section-current-job .pipeline-stage.completed.selected .stage-step-num::after {
+    border-color: var(--color-success);
+  }
+
+  #section-current-job .pipeline-stage.active.selected .stage-step-num::after {
+    border-color: var(--color-primary);
   }
 }
