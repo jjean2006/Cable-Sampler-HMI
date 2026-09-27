@@ -5,10 +5,9 @@
 /* App Frame Container */
 .hmi-container {
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-height: 100vh;
   background-color: var(--bg-app);
 }
 
@@ -20,8 +19,7 @@
   padding: 0;
   gap: 0;
   background-color: var(--bg-app);
-  min-height: 0;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 /* Main Content Viewport */

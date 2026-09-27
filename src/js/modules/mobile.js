@@ -27,52 +27,42 @@ export function initMobile() {
     }
   });
 
-  // Mobile: One stage is always active, non-collapsible
+  // Toggle subprocesses on current job mobile view
   if (pipelineStages.length > 0 && breakdown) {
     const detailBlocks = breakdown.querySelectorAll('.stage-detail-block');
 
-    function selectStageForMobile(stageElement) {
-      if (window.innerWidth > 1024) return;
-      
-      const stageNum = stageElement.id.split('-').pop();
-      const targetBlock = breakdown.querySelector(`.stage-detail-block[data-stage="${stageNum}"]`);
-      
-      // Reveal the breakdown container (if hidden)
-      breakdown.classList.add('revealed');
-      
-      // Hide all blocks and unselect all circles
-      detailBlocks.forEach(b => b.classList.remove('show-mobile'));
-      pipelineStages.forEach(s => s.classList.remove('selected'));
-      
-      // Show the targeted one
-      if (targetBlock) targetBlock.classList.add('show-mobile');
-      stageElement.classList.add('selected');
-    }
-
-    // Bind click events (no toggling off)
     pipelineStages.forEach(stage => {
       stage.addEventListener('click', (e) => {
-        selectStageForMobile(stage);
-        e.stopPropagation();
+        if (window.innerWidth <= 1024) {
+          // Find the index or ID
+          const stageNum = stage.id.split('-').pop(); // '1' from 'stage-col-1'
+          const targetBlock = breakdown.querySelector(`.stage-detail-block[data-stage="${stageNum}"]`);
+          
+          if (breakdown.classList.contains('revealed') && targetBlock && targetBlock.classList.contains('show-mobile')) {
+            // Clicking the same one again toggles it off
+            breakdown.classList.remove('revealed');
+            targetBlock.classList.remove('show-mobile');
+            stage.classList.remove('selected');
+          } else {
+            // Show new one
+            breakdown.classList.add('revealed');
+            detailBlocks.forEach(b => b.classList.remove('show-mobile'));
+        pipelineStages.forEach(s => s.classList.remove('selected'));
+            pipelineStages.forEach(s => s.classList.remove('selected'));
+            if (targetBlock) targetBlock.classList.add('show-mobile');
+            stage.classList.add('selected');
+          }
+          
+          e.stopPropagation();
+        }
       });
     });
 
-    // On initial load, default to the currently 'active' stage of the job, or the first one
-    if (window.innerWidth <= 1024) {
-      let defaultStage = Array.from(pipelineStages).find(s => s.classList.contains('active'));
-      if (!defaultStage) defaultStage = pipelineStages[0];
-      if (defaultStage) selectStageForMobile(defaultStage);
-    }
-    
-    // Also re-apply if the window is resized into mobile mode
-    window.addEventListener('resize', () => {
-      if (window.innerWidth <= 1024 && !breakdown.classList.contains('revealed')) {
-        let defaultStage = Array.from(pipelineStages).find(s => s.classList.contains('selected')) || 
-                           Array.from(pipelineStages).find(s => s.classList.contains('active')) || 
-                           pipelineStages[0];
-        if (defaultStage) selectStageForMobile(defaultStage);
-      } else if (window.innerWidth > 1024) {
-         // Optionally clean up mobile classes if resizing to desktop, though CSS usually handles hiding them
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1024 && breakdown.classList.contains('revealed') && !breakdown.contains(e.target)) {
+        breakdown.classList.remove('revealed');
+        detailBlocks.forEach(b => b.classList.remove('show-mobile'));
+        pipelineStages.forEach(s => s.classList.remove('selected'));
       }
     });
   }

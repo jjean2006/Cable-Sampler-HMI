@@ -48,7 +48,6 @@
 
   .hmi-topbar-mobile {
     display: flex;
-    flex-shrink: 0;
     justify-content: space-between;
     align-items: center;
     padding: 8px 16px;
@@ -89,7 +88,9 @@
   
 
   /* Stable Sidebar Layout (Hidden Collapsed) */
-
+  .hmi-main-layout {
+    display: block; 
+  }
   
   .hmi-sidebar {
     position: absolute !important;
@@ -119,6 +120,7 @@
   .hmi-content-viewport {
     margin-left: 0;
     width: 100% !important;
+    height: 100vh;
     overflow-y: auto;
   }
   
@@ -303,6 +305,11 @@
     display: block;
   }
 
+  /* White border around the selected stage circle */
+  #section-current-job .pipeline-stage.selected .stage-step-num {
+    border: 2px solid #ffffff !important;
+  }
+
   /* Hide the "STAGE X" heading pill from the info card */
   #section-current-job .workflow-steps-breakdown .stage-pill {
     display: none !important;
@@ -417,7 +424,6 @@
   .topbar-nav .nav-item.active .nav-icon {
     filter: brightness(0) invert(1);
   }
-
   .topbar-brand {
     flex: 0 0 auto !important; /* Do not flex 1 on desktop */
     margin-right: 24px;
@@ -426,12 +432,6 @@
 
 @media (max-width: 1024px) {
   .topbar-nav {
-    display: none !important;
-  }
-}
-
-@media (max-width: 1024px) {
-  .topbar-brand .brand-title {
     display: none !important;
   }
 }
