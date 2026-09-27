@@ -38,6 +38,50 @@ export function switchView(targetView) {
   if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
     window.history.replaceState(null, null, `#${targetView}`);
   }
+
+  // Sync mobile pill with smooth width animation
+  if (typeof document !== 'undefined') {
+    const mobileTrigger = document.getElementById('mobile-active-tab-trigger');
+    const activeSidebarItem = document.querySelector(`.hmi-sidebar .nav-item[data-target="${targetView}"]`);
+    if (mobileTrigger && activeSidebarItem) {
+      const activeIcon = activeSidebarItem.querySelector('.nav-icon');
+      const activeLabel = activeSidebarItem.querySelector('.nav-label');
+      const triggerIcon = mobileTrigger.querySelector('.nav-icon');
+      const triggerLabel = mobileTrigger.querySelector('.nav-label');
+      
+      if (activeIcon && triggerIcon && activeLabel && triggerLabel && triggerLabel.textContent !== activeLabel.textContent) {
+        // 1. Measure current width
+        const currentWidth = mobileTrigger.getBoundingClientRect().width;
+        
+        // 2. Lock current width
+        mobileTrigger.style.width = `${currentWidth}px`;
+        
+        // 3. Update content
+        triggerIcon.src = activeIcon.src;
+        triggerLabel.textContent = activeLabel.textContent;
+        
+        // 4. Temporarily set to auto (without transition) to measure new width
+        mobileTrigger.style.transition = 'none';
+        mobileTrigger.style.width = 'auto';
+        const newWidth = mobileTrigger.getBoundingClientRect().width;
+        
+        // 5. Set back to current width to prepare for animation
+        mobileTrigger.style.width = `${currentWidth}px`;
+        
+        // 6. Force reflow so the browser acknowledges the starting width
+        void mobileTrigger.offsetWidth;
+        
+        // 7. Restore CSS transition and animate to new width
+        mobileTrigger.style.transition = ''; // Fallback to CSS rules
+        mobileTrigger.style.width = `${newWidth}px`;
+        
+        // 8. Clean up inline width after animation completes so it can naturally flex
+        setTimeout(() => {
+          mobileTrigger.style.width = '';
+        }, 300);
+      }
+    }
+  }
 }
 
 /**

@@ -1,5 +1,5 @@
 export function initMobile() {
-  const menuBtn = document.getElementById('mobile-menu-btn');
+  const menuBtn = document.getElementById('mobile-active-tab-trigger');
   const sidebar = document.querySelector('.hmi-sidebar');
   const workflowCard = document.querySelector('.workflow-card');
   const breakdown = document.querySelector('.workflow-steps-breakdown');
@@ -8,7 +8,7 @@ export function initMobile() {
   if (menuBtn && sidebar) {
     menuBtn.addEventListener('click', (e) => {
       sidebar.classList.toggle('expanded');
-      menuBtn.classList.toggle('is-active');
+      menuBtn.classList.toggle('is-open');
       document.body.classList.toggle('no-scroll', sidebar.classList.contains('expanded'));
       e.stopPropagation(); // prevent clicking document from immediately closing it
     });
@@ -16,10 +16,14 @@ export function initMobile() {
 
   // Close sidebar if clicked outside when expanded
   document.addEventListener('click', (e) => {
-    if (sidebar && sidebar.classList.contains('expanded') && !sidebar.contains(e.target)) {
-      sidebar.classList.remove('expanded');
-      if (menuBtn) menuBtn.classList.remove('is-active');
-      document.body.classList.remove('no-scroll');
+    if (sidebar && sidebar.classList.contains('expanded')) {
+      const navMenu = sidebar.querySelector('.nav-menu');
+      // If click is outside the navMenu and not on the hamburger button, close the menu
+      if (navMenu && !navMenu.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) {
+        sidebar.classList.remove('expanded');
+        if (menuBtn) menuBtn.classList.remove('is-open');
+        document.body.classList.remove('no-scroll');
+      }
     }
   });
 
@@ -69,7 +73,7 @@ export function initMobile() {
     item.addEventListener('click', () => {
       if (window.innerWidth <= 1024 && sidebar) {
         sidebar.classList.remove('expanded');
-        if (menuBtn) menuBtn.classList.remove('is-active');
+        if (menuBtn) menuBtn.classList.remove('is-open');
         document.body.classList.remove('no-scroll');
       }
     });

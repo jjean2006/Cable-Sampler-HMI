@@ -3,9 +3,9 @@
 .topbar-brand {
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   gap: 8px !important;
-  flex: 1; 
+  flex: 0 0 auto !important;
 }
 
 /* Fix logo alignment */
@@ -14,6 +14,38 @@
 }
 
 /* Hamburger Button in Topbar */
+
+  .mobile-dropdown-trigger-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #mobile-active-tab-trigger {
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+
+    width: auto !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 100px !important;
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    border: none;
+    cursor: pointer;
+  }
+  #mobile-active-tab-trigger .nav-icon {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+  }
+  #mobile-active-tab-trigger.is-open .dropdown-arrow {
+    transform: rotate(90deg);
+  }
+
   .hmi-topbar-mobile {
     display: flex;
     justify-content: space-between;
@@ -62,21 +94,26 @@
   
   .hmi-sidebar {
     position: absolute !important;
-    top: 0;
-    left: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
+    padding: 0 !important;
     width: 100vw !important;
     height: 100%;
     z-index: 2000;
-    background-color: var(--bg-sidebar);
-    transition: transform 0.3s ease;
-    overflow-x: hidden;
-    transform: translateX(-100%); /* Hidden completely */
+    background-color: rgba(14, 16, 21, 0.7); /* Slightly darken main canvas */
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    transform: none; /* No full-sidebar sliding */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
   
   .hmi-sidebar.expanded {
-    transform: translateX(0); /* Slides in */
-    box-shadow: 4px 0 24px rgba(0,0,0,0.6); /* Adds a drop shadow over the canvas */
+    opacity: 1;
+    pointer-events: auto;
+    box-shadow: none;
   }
   
   /* Main Content Area */
@@ -109,21 +146,39 @@
     /* No need to hide them because the entire sidebar is translated off-screen! */
   }
   
-  /* Fix all tab and bg overflow when expanded */
+  /* Dropdown Tab Bar Styling */
+  .hmi-sidebar .nav-menu {
+    flex: 0 0 auto !important;
+    padding: 16px 16px 24px 16px; /* Padding for the dropdown */
+    margin: 0; /* Reset */
+    transform: translateY(-120%); /* Start hidden above the top bar */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+  }
+  
+  .hmi-sidebar.expanded .nav-menu {
+    transform: translateY(0); /* Slide down smoothly */
+  }
+
+  .hmi-sidebar .nav-menu::before {
+    /* Noisy card background covering the dropdown area */
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 0 24px 24px !important;
+    border-top: none; /* Touches the top bar seamlessly */
+    box-shadow: 0 16px 32px rgba(0,0,0,0.4);
+  }
+
   .hmi-sidebar .nav-item {
     width: 100% !important;
-    border-radius: 28px !important;
+    border-radius: 12px !important; /* Slightly tighter radius for list items */
     margin: 0 !important;
   }
-  .hmi-sidebar .nav-menu::before {
-    right: 0 !important;
-    border-radius: 28px !important;
-  }
-  .hmi-sidebar .nav-menu {
-    padding-right: 24px;
-    flex: 0 0 auto;
-    margin-top: auto;
-    margin-bottom: auto;
+  
+  .hmi-sidebar .sidebar-bottom {
+    display: none !important; /* Hide system status on mobile dropdown to keep it clean */
   }
   
   /* Reduce gap for mobile */
@@ -320,6 +375,11 @@
   .hmi-sidebar {
     display: none !important;
   }
+
+  .mobile-dropdown-trigger-container {
+    display: none !important;
+  }
+
   .topbar-nav {
     display: flex;
     align-items: center;
