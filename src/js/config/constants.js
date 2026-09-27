@@ -38,7 +38,7 @@ export const INITIAL_QUEUE = [
   {
     id: 'JOB-2026-0843',
     name: 'XLPE Sheath Dumbbell Production',
-    standard: 'IS 7098 (Parts 1 & 2)',
+    standard: 'IS 7098 (Part 2)',
     specimens: '6 pcs',
     startTime: '19:30:15 (+01m 15s)',
     duration: '04m 00s',
@@ -47,7 +47,7 @@ export const INITIAL_QUEUE = [
   {
     id: 'JOB-2026-0844',
     name: 'Tensile & Elongation Hot Set Sample',
-    standard: 'IS 10810 (Parts 2, 7, 33)',
+    standard: 'IS 10810 (Part 7)',
     specimens: '10 pcs',
     startTime: '19:34:15 (+05m 15s)',
     duration: '06m 15s',

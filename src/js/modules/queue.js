@@ -84,7 +84,7 @@ export function addQueueJob() {
   const newJob = {
     id: `JOB-2026-0${nextNum}`,
     name: 'IS 10810 / IS 7098 Cable Specimen Batch',
-    standard: state.queue.length % 2 === 0 ? 'IS 10810 (Parts 2, 7, 33)' : 'IS 7098 (Parts 1 & 2)',
+    standard: state.queue.length % 2 === 0 ? 'IS 10810 (Part 2)' : 'IS 7098 (Part 2)',
     specimens: '6 pcs',
     startTime: '+20m 00s',
     duration: '04m 15s',

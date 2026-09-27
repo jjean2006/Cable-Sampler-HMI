@@ -7,7 +7,7 @@
  */
 
 import { dom } from './utils/dom.js';
-import { state } from './state/store.js';
+import { state } from './state/store.js?v=2801';
 import { formatDuration, formatMSS } from './utils/formatters.js';
 import { initMobile } from './modules/mobile.js';
 import { initAuth } from './modules/auth.js';
@@ -30,7 +30,7 @@ import {
   closeModal,
   submitJob,
   initQueue
-} from './modules/queue.js';
+} from './modules/queue.js?v=2801';
 import { filterHistory, initHistory } from './modules/history.js';
 import {
   showToast,

@@ -3,7 +3,7 @@
  * Holds reactive HMI state shared across all functional modules.
  */
 
-import { INITIAL_STATE, WORKFLOW_STEPS, INITIAL_QUEUE } from '../config/constants.js';
+import { INITIAL_STATE, WORKFLOW_STEPS, INITIAL_QUEUE } from '../config/constants.js?v=2801';
 
 export const state = {
   currentView: INITIAL_STATE.currentView,

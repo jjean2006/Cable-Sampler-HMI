@@ -306,11 +306,7 @@
   }
 
   /* White border around the selected stage circle */
-  #section-current-job .pipeline-stage.selected .stage-step-num {
-    border: 2px solid #ffffff !important;
-  }
-
-  /* Hide the "STAGE X" heading pill from the info card */
+/* Hide the "STAGE X" heading pill from the info card */
   #section-current-job .workflow-steps-breakdown .stage-pill {
     display: none !important;
   }
@@ -432,6 +428,25 @@
 
 @media (max-width: 1024px) {
   .topbar-nav {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  #btn-topbar-create span {
+    display: none !important;
+  }
+  
+  #btn-topbar-create {
+    padding: 8px !important;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1024px) {
+  .topbar-brand .brand-title {
     display: none !important;
   }
 }
