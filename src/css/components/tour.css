@@ -1,0 +1,135 @@
+/* ==========================================================================
+   Product Tour Component
+   ========================================================================== */
+
+/* 4-Part Overlay System */
+.tour-overlay {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 9000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto; /* Block clicks outside cutout */
+}
+
+/* Tooltip Container */
+.tour-tooltip {
+  position: absolute;
+  z-index: 9002;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 20px;
+  width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8);
+  color: var(--text-main);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.tour-tooltip.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tooltip Arrow */
+.tour-arrow {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transform: rotate(45deg);
+}
+
+/* Base Arrow Visibility Adjustments */
+.tour-tooltip[data-placement="top"] .tour-arrow {
+  bottom: -9px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.tour-tooltip[data-placement="bottom"] .tour-arrow {
+  top: -9px;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+}
+.tour-tooltip[data-placement="left"] .tour-arrow {
+  right: -9px;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+.tour-tooltip[data-placement="right"] .tour-arrow {
+  left: -9px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+
+/* Tooltip Content */
+.tour-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tour-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.tour-counter {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.tour-body {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.tour-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tour-btn {
+  background-color: var(--text-main);
+  color: var(--bg-card);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.tour-btn:hover {
+  opacity: 0.8;
+}
+
+.tour-visual-cutout {
+  position: fixed;
+  border-radius: 8px; /* Rounded corners! */
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+  pointer-events: none; /* Let clicks pass through */
+  z-index: 8999; /* Just below the invisible blocking overlays */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tour-auto-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 6px;
+  background-color: var(--color-info);
+  width: 0%;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 0 0 12px 12px;
+}

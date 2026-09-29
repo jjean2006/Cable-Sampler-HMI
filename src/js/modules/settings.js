@@ -5,6 +5,8 @@
 
 import { dom } from '../utils/dom.js';
 import { STORAGE_KEY } from '../config/constants.js';
+import { switchView } from './navigation.js';
+import { startTour } from './tour.js';
 
 let toastTimer = null;
 
@@ -101,4 +103,19 @@ export function initSettings() {
   if (dom.btnSaveSettings) dom.btnSaveSettings.addEventListener('click', saveSettings);
   if (dom.btnResetSettings) dom.btnResetSettings.addEventListener('click', resetSettings);
   if (dom.btnTestNetwork) dom.btnTestNetwork.addEventListener('click', testNetwork);
+  if (dom.btnResetTour) {
+    dom.btnResetTour.addEventListener('click', () => {
+      localStorage.removeItem('tourCompleted');
+      showToast('Restarting tour...', 'success');
+      
+      // Go to base view and remove hash
+      if (typeof window !== 'undefined' && window.history) {
+        window.history.pushState('', document.title, window.location.pathname + window.location.search);
+      }
+      switchView('current-job');
+      
+      // Allow DOM to settle before starting tour
+      setTimeout(startTour, 300);
+    });
+  }
 }

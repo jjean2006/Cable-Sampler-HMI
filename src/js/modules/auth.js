@@ -4,6 +4,7 @@
  */
 
 import { showToast } from './settings.js';
+import { startTour } from './tour.js';
 
 export function initAuth() {
   const authScreen = document.getElementById('auth-screen');
@@ -16,6 +17,7 @@ export function initAuth() {
     btnLogin.addEventListener('click', () => {
       if (authOpId && authPin && authOpId.value.trim() !== '' && authPin.value.trim() !== '') {
         if (authScreen) authScreen.classList.add('hidden');
+        if (localStorage.getItem('tourCompleted') !== 'true') setTimeout(startTour, 500);
         showToast('Operator ' + authOpId.value + ' authenticated.');
       } else {
         if (authError) authError.style.display = 'block';

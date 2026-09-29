@@ -12,6 +12,7 @@ import { formatDuration, formatMSS } from './utils/formatters.js';
 import { initMobile } from './modules/mobile.js';
 import { initAuth } from './modules/auth.js';
 import { switchView, initNavigation } from './modules/navigation.js';
+import { initTour } from './modules/tour.js';
 import {
   renderWorkflowUI,
   advanceStep,
@@ -86,6 +87,7 @@ export function init() {
   initAuth();
   initNavigation();
   initWorkflow();
+  initTour();
   initQueue();
   initHistory();
   initSettings();

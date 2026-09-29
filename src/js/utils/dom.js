@@ -25,6 +25,7 @@ export const dom = {
   get settingsForm() { return typeof document !== 'undefined' ? document.getElementById('hmi-settings-form') : null; },
   get btnSaveSettings() { return typeof document !== 'undefined' ? document.getElementById('btn-save-settings') : null; },
   get btnResetSettings() { return typeof document !== 'undefined' ? document.getElementById('btn-reset-settings') : null; },
+  get btnResetTour() { return typeof document !== 'undefined' ? document.getElementById('btn-reset-tour') : null; },
   get btnTestNetwork() { return typeof document !== 'undefined' ? document.getElementById('btn-test-network') : null; },
   get networkResult() { return typeof document !== 'undefined' ? document.getElementById('network-ping-result') : null; },
   get settingsToast() { return typeof document !== 'undefined' ? document.getElementById('settings-toast') : null; },
