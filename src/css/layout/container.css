@@ -7,7 +7,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: 100%;
+
   overflow: hidden;
   background-color: var(--bg-app);
 }
@@ -17,10 +17,10 @@
   width: 100%;
   display: flex;
   flex: 1;
+  min-height: 0; /* Crucial: allows flex item to shrink smaller than content */
   padding: 0;
   gap: 0;
   background-color: var(--bg-app);
-  height: 100%;
   overflow: hidden;
 }
 

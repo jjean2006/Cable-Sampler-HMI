@@ -87,11 +87,6 @@
   
   
 
-  /* Stable Sidebar Layout (Hidden Collapsed) */
-  .hmi-main-layout {
-    display: block; 
-  }
-  
   .hmi-sidebar {
     position: absolute !important;
     top: 0; left: 0; right: 0; bottom: 0;
