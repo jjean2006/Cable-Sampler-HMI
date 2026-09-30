@@ -150,7 +150,10 @@ const steps = [
   {
     title: "Job Queue",
     content: "This table shows jobs waiting to be processed. The machine pulls from the top of the queue automatically.",
-    target: () => '#queue-table',
+    target: () => {
+      const t = document.querySelector('#queue-table');
+      return t ? (t.closest('.table-responsive') || t) : null;
+    },
     placement: 'bottom'
   },
   {
@@ -176,7 +179,7 @@ const steps = [
     title: "Cancel Dispatch",
     content: "For this tour, let's just cancel. Click 'Cancel'.",
     target: () => '#btn-cancel-job',
-    placement: 'bottom',
+    placement: 'top',
     requireClick: true
   },
   {
@@ -201,7 +204,10 @@ const steps = [
   {
     title: "History Table",
     content: "All successfully completed and aborted jobs are recorded here for auditing.",
-    target: () => '#history-table',
+    target: () => {
+      const t = document.querySelector('#history-table');
+      return t ? (t.closest('.table-responsive') || t) : null;
+    },
     placement: 'top'
   },
   {
@@ -241,13 +247,13 @@ const steps = [
     title: "Network Diagnostics",
     content: "Use this utility to ping the machine and verify connectivity.",
     target: () => '#btn-test-network',
-    placement: 'bottom'
+    placement: 'top'
   },
   {
     title: "Save Changes",
     content: "Don't forget to save your configuration changes. This concludes the tour!",
     target: () => '#btn-save-settings',
-    placement: 'bottom'
+    placement: 'top'
   }
 ];
 

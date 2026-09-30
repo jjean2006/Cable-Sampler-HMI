@@ -260,10 +260,9 @@
     max-width: 100%;
     overflow-x: hidden;
   }
+  /* Let .table-responsive handle scrolling, avoid double scrollbar on the table element */
   .job-queue-table, .job-history-table, table {
-    display: block;
     max-width: 100%;
-    overflow-x: auto;
   }
   table {
     min-width: 500px;
