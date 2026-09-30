@@ -164,13 +164,13 @@ const steps = [
     title: "Job Priority",
     content: "Assign an execution priority to this job. High priority jobs are visually flagged.",
     target: () => '#new-job-priority',
-    placement: 'right'
+    placement: 'bottom'
   },
   {
     title: "Queue Sorting & Schedule",
     content: "You can automatically sort this job into the queue by injecting it at a custom position, placing it next, or pushing it to the end.",
     target: () => '.schedule-options',
-    placement: 'right'
+    placement: 'bottom'
   },
   {
     title: "Cancel Dispatch",
@@ -183,7 +183,7 @@ const steps = [
     title: "Queue Actions",
     content: "You can bump a job to the top of the queue or delete it using these action buttons.",
     target: () => '#queue-table tbody tr:first-child .btn-icon',
-    placement: 'left'
+    placement: 'bottom'
   },
   {
     title: "Go to History",
@@ -460,11 +460,11 @@ function positionElements() {
   switch(placement) {
     case 'bottom':
       top = rect.bottom + spacing;
-      left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+      left = window.innerWidth <= 1024 ? (window.innerWidth / 2) - (tooltipRect.width / 2) : rect.left + (rect.width / 2) - (tooltipRect.width / 2);
       break;
     case 'top':
       top = rect.top - tooltipRect.height - spacing;
-      left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+      left = window.innerWidth <= 1024 ? (window.innerWidth / 2) - (tooltipRect.width / 2) : rect.left + (rect.width / 2) - (tooltipRect.width / 2);
       break;
     case 'right':
       top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
