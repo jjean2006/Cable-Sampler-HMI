@@ -15,6 +15,9 @@ import { dom } from '../utils/dom.js';
 let currentStep = 0;
 let tooltip = null;
 let overlays = {};
+let autoClickTimer = null;
+let currentAdvanceOnClick = null;
+let currentTargetEl = null;
 
 // Helper to reliably check if element is truly visible
 function isElementVisible(el) {
@@ -39,12 +42,6 @@ function isElementVisible(el) {
 }
 
 const steps = [
-  {
-    title: "Welcome to CableSampler",
-    content: "This is your main dashboard for controlling and monitoring the cable sampling machine.",
-    target: () => window.innerWidth <= 1024 ? '.topbar-brand .brand-logo' : '.topbar-brand',
-    placement: 'bottom'
-  },
   {
     title: "Current Job Overview",
     content: "Shows progress and details of current job",
@@ -253,13 +250,13 @@ const steps = [
     title: "Save Changes",
     content: "Don't forget to save your configuration changes. This concludes the tour!",
     target: () => '#btn-save-settings',
-    placement: 'top'
+    placement: 'bottom'
   }
 ];
 
 export function initTour() {}
 
-export function startTour() {
+function runTour() {
   if (tooltip) return; // Already running
   currentStep = 0;
 
@@ -293,6 +290,7 @@ export function startTour() {
     </div>
     <div class="tour-body"></div>
     <div class="tour-footer">
+      <button class="tour-btn" id="tour-skip-btn" style="background: transparent; color: var(--text-muted); border: none; padding: 0 8px; font-weight: 500;">Skip Tour</button>
       <button class="tour-btn" id="tour-next-btn">Okay</button>
     </div>
     <div class="tour-auto-progress-bar"></div>
@@ -300,6 +298,7 @@ export function startTour() {
   document.body.appendChild(tooltip);
 
   document.getElementById('tour-next-btn').addEventListener('click', nextStep);
+  document.getElementById('tour-skip-btn').addEventListener('click', endTour);
   window.addEventListener('resize', positionElements);
   window.addEventListener('scroll', positionElements);
 
@@ -368,16 +367,20 @@ function renderStep() {
         prog.style.width = '100%';
         
         // 5-second auto click timer
-        let autoClickTimer = setTimeout(() => {
+        autoClickTimer = setTimeout(() => {
            if (targetEl) targetEl.click();
         }, 5000);
         
         const advanceOnClick = () => {
           clearTimeout(autoClickTimer);
           targetEl.removeEventListener('click', advanceOnClick);
+          currentAdvanceOnClick = null;
+          currentTargetEl = null;
           // Let mobile.js handle closing the sidebar natively when nav items are clicked
           nextStep();
         };
+        currentAdvanceOnClick = advanceOnClick;
+        currentTargetEl = targetEl;
         targetEl.addEventListener('click', advanceOnClick);
       } else {
         nextBtn.style.display = 'block';
@@ -510,6 +513,12 @@ function nextStep() {
 }
 
 function endTour() {
+  if (autoClickTimer) clearTimeout(autoClickTimer);
+  if (currentTargetEl && currentAdvanceOnClick) {
+    currentTargetEl.removeEventListener('click', currentAdvanceOnClick);
+  }
+  currentTargetEl = null;
+  currentAdvanceOnClick = null;
   Object.values(overlays).forEach(div => div && div.remove());
   if (tooltip) tooltip.remove();
   tooltip = null;
@@ -521,6 +530,81 @@ function endTour() {
   
   document.querySelector('.hmi-sidebar')?.classList.remove('expanded');
   localStorage.setItem('tourCompleted', 'true');
+}
+
+export function startTour() {
+  if (document.querySelector('.tour-welcome-overlay') || tooltip) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'tour-welcome-overlay';
+  overlay.style.position = 'fixed';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = '9999';
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity 0.4s ease';
+  
+  const modal = document.createElement('div');
+  modal.className = 'tour-tooltip';
+  modal.style.position = 'relative';
+  modal.style.opacity = '0';
+  modal.style.transform = 'translateY(20px)';
+  modal.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  modal.style.width = '600px';
+  modal.style.maxWidth = '90vw';
+  modal.style.textAlign = 'center';
+  modal.style.padding = '50px 40px';
+  
+  modal.innerHTML = `
+    <div style="margin-bottom: 24px; display: flex; justify-content: center;">
+      <svg class="brand-logo" width="64" height="64" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="14" stroke="var(--text-main)" stroke-width="2"/>
+        <circle cx="16" cy="11" r="3" fill="var(--text-main)"/>
+        <circle cx="11.5" cy="19" r="3" fill="var(--text-main)"/>
+        <circle cx="20.5" cy="19" r="3" fill="var(--text-main)"/>
+      </svg>
+    </div>
+    <h2 style="font-size: 28px; margin-bottom: 16px; color: var(--text-main);">Cable Sampler Dashboard</h2>
+    <p style="font-size: 18px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.6;">Start the tour to get acquainted with the system.</p>
+    <div style="display: flex; gap: 16px; justify-content: center;">
+      <button class="tour-btn" id="welcome-skip-btn" style="background-color: transparent; border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 12px 24px; font-size: 16px;">Skip</button>
+      <button class="tour-btn" id="welcome-start-btn" style="padding: 12px 24px; font-size: 16px;">Start Tour</button>
+    </div>
+  `;
+  
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  
+  // Trigger animation after append
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+    modal.style.opacity = '1';
+    modal.style.transform = 'translateY(0)';
+  });
+  
+  document.getElementById('welcome-skip-btn').addEventListener('click', () => {
+    overlay.style.opacity = '0';
+    modal.style.opacity = '0';
+    modal.style.transform = 'translateY(10px)';
+    setTimeout(() => overlay.remove(), 400);
+    localStorage.setItem('tourCompleted', 'true');
+  });
+  
+  document.getElementById('welcome-start-btn').addEventListener('click', () => {
+    overlay.style.opacity = '0';
+    modal.style.opacity = '0';
+    modal.style.transform = 'translateY(10px)';
+    setTimeout(() => {
+      overlay.remove();
+      runTour();
+    }, 400);
+  });
 }
 
 window.startTour = startTour;
