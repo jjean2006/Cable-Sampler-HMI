@@ -581,12 +581,13 @@ export function startTour() {
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
   
-  // Trigger animation after append
-  requestAnimationFrame(() => {
-    overlay.style.opacity = '1';
-    modal.style.opacity = '1';
-    modal.style.transform = 'translateY(0)';
-  });
+  // Force browser reflow to register initial opacity:0 before transitioning
+  void overlay.offsetWidth;
+  
+  // Trigger fade-in animation
+  overlay.style.opacity = '1';
+  modal.style.opacity = '1';
+  modal.style.transform = 'translateY(0)';
   
   document.getElementById('welcome-skip-btn').addEventListener('click', () => {
     overlay.style.opacity = '0';
