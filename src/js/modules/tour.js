@@ -10,14 +10,12 @@ function preventKeyScroll(e) {
     e.preventDefault();
   }
 }
-import { dom } from '../utils/dom.js';
 
 let currentStep = 0;
 let tooltip = null;
 let overlays = {};
 let autoClickTimer = null;
-let currentAdvanceOnClick = null;
-let currentTargetEl = null;
+let tourAbortController = null;
 
 // Helper to reliably check if element is truly visible
 function isElementVisible(el) {
@@ -371,17 +369,12 @@ function renderStep() {
            if (targetEl) targetEl.click();
         }, 5000);
         
+        tourAbortController = new AbortController();
         const advanceOnClick = () => {
           clearTimeout(autoClickTimer);
-          targetEl.removeEventListener('click', advanceOnClick);
-          currentAdvanceOnClick = null;
-          currentTargetEl = null;
-          // Let mobile.js handle closing the sidebar natively when nav items are clicked
           nextStep();
         };
-        currentAdvanceOnClick = advanceOnClick;
-        currentTargetEl = targetEl;
-        targetEl.addEventListener('click', advanceOnClick);
+        targetEl.addEventListener('click', advanceOnClick, { signal: tourAbortController.signal });
       } else {
         nextBtn.style.display = 'block';
         const prog = tooltip.querySelector('.tour-auto-progress-bar');
@@ -514,11 +507,10 @@ function nextStep() {
 
 function endTour() {
   if (autoClickTimer) clearTimeout(autoClickTimer);
-  if (currentTargetEl && currentAdvanceOnClick) {
-    currentTargetEl.removeEventListener('click', currentAdvanceOnClick);
+  if (tourAbortController) {
+    tourAbortController.abort();
+    tourAbortController = null;
   }
-  currentTargetEl = null;
-  currentAdvanceOnClick = null;
   Object.values(overlays).forEach(div => div && div.remove());
   if (tooltip) tooltip.remove();
   tooltip = null;

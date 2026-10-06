@@ -5,16 +5,8 @@
 
 import { INITIAL_STATE, WORKFLOW_STEPS, INITIAL_QUEUE } from '../config/constants.js?v=2801';
 
-export const state = {
-  currentView: INITIAL_STATE.currentView,
-  isPaused: INITIAL_STATE.isPaused,
-  isEstop: INITIAL_STATE.isEstop,
-  uptimeSeconds: INITIAL_STATE.uptimeSeconds,
-  cycleElapsedSeconds: INITIAL_STATE.cycleElapsedSeconds,
-  cycleTotalSeconds: INITIAL_STATE.cycleTotalSeconds,
-  activeStepIndex: INITIAL_STATE.activeStepIndex,
-  specimenCurrent: INITIAL_STATE.specimenCurrent,
-  specimenTotal: INITIAL_STATE.specimenTotal,
-  workflowSteps: WORKFLOW_STEPS.map(step => ({ ...step })),
-  queue: INITIAL_QUEUE.map(job => ({ ...job }))
-};
+export const state = structuredClone({
+  ...INITIAL_STATE,
+  workflowSteps: WORKFLOW_STEPS,
+  queue: INITIAL_QUEUE
+});

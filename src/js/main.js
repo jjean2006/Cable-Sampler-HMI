@@ -6,7 +6,6 @@
  * and mounts the public window.HMI controller interface.
  */
 
-import { dom } from './utils/dom.js';
 import { state } from './state/store.js?v=2801';
 import { formatDuration, formatMSS } from './utils/formatters.js';
 import { initMobile } from './modules/mobile.js';
@@ -47,8 +46,8 @@ import {
  */
 function updateClock() {
   const now = new Date();
-  if (dom.clock) {
-    dom.clock.textContent = now.toTimeString().split(' ')[0];
+  if (document.getElementById('header-clock')) {
+    document.getElementById('header-clock').textContent = now.toTimeString().split(' ')[0];
   }
 }
 
@@ -108,33 +107,5 @@ if (typeof document !== 'undefined') {
     init();
   }
 }
-
-export {
-  state,
-  switchView,
-  advanceStep,
-  prevStep,
-  togglePause,
-  triggerEstop,
-  moveQueueItem,
-  deleteQueueItem,
-  addQueueJob,
-  filterHistory,
-  saveSettings,
-  resetSettings,
-  testNetwork,
-  showToast,
-  openModal,
-  closeModal,
-  submitJob,
-  renderWorkflowUI,
-  renderQueueTable,
-  updateCycleProgress,
-  updateClock,
-  formatDuration,
-  formatMSS,
-  dom,
-  HMI
-};
 
 export default HMI;

@@ -3,14 +3,13 @@
  * Filters completed production run records by execution outcome (All, Success, Failure).
  */
 
-import { dom } from '../utils/dom.js';
 
 /**
  * Filters the Job History table rows based on status ('all', 'success', 'failure').
  * @param {string} filter
  */
 export function filterHistory(filter) {
-  dom.filterBtns.forEach(btn => {
+  document.querySelectorAll('.btn-filter').forEach(btn => {
     if (btn.getAttribute('data-filter') === filter) {
       btn.classList.add('active');
     } else {
@@ -33,7 +32,7 @@ export function filterHistory(filter) {
  * Initializes filter button event listeners.
  */
 export function initHistory() {
-  dom.filterBtns.forEach(btn => {
+  document.querySelectorAll('.btn-filter').forEach(btn => {
     btn.addEventListener('click', () => {
       const filter = btn.getAttribute('data-filter');
       if (filter) filterHistory(filter);

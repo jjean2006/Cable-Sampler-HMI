@@ -3,7 +3,6 @@
  * View switching, hash routing, and global keyboard shortcuts (F1-F4, 1-4, Spacebar).
  */
 
-import { dom } from '../utils/dom.js';
 import { state } from '../state/store.js';
 import { togglePause } from './workflow.js';
 
@@ -15,7 +14,7 @@ export function switchView(targetView) {
   state.currentView = targetView;
 
   // Update nav items
-  dom.navItems.forEach(item => {
+  document.querySelectorAll('.nav-item').forEach(item => {
     if (item.getAttribute('data-target') === targetView) {
       item.classList.add('active');
       item.setAttribute('aria-selected', 'true');
@@ -26,7 +25,7 @@ export function switchView(targetView) {
   });
 
   // Update sections
-  dom.sections.forEach(section => {
+  document.querySelectorAll('.hmi-section').forEach(section => {
     if (section.id === `section-${targetView}`) {
       section.classList.add('active');
     } else {
@@ -50,35 +49,15 @@ export function switchView(targetView) {
       const triggerLabel = mobileTrigger.querySelector('.nav-label');
       
       if (activeIcon && triggerIcon && activeLabel && triggerLabel && triggerLabel.textContent !== activeLabel.textContent) {
-        // 1. Measure current width
-        const currentWidth = mobileTrigger.getBoundingClientRect().width;
-        
-        // 2. Lock current width
-        mobileTrigger.style.width = `${currentWidth}px`;
-        
-        // 3. Update content
-        triggerIcon.src = activeIcon.src;
-        triggerLabel.textContent = activeLabel.textContent;
-        
-        // 4. Temporarily set to auto (without transition) to measure new width
-        mobileTrigger.style.transition = 'none';
-        mobileTrigger.style.width = 'auto';
-        const newWidth = mobileTrigger.getBoundingClientRect().width;
-        
-        // 5. Set back to current width to prepare for animation
-        mobileTrigger.style.width = `${currentWidth}px`;
-        
-        // 6. Force reflow so the browser acknowledges the starting width
-        void mobileTrigger.offsetWidth;
-        
-        // 7. Restore CSS transition and animate to new width
-        mobileTrigger.style.transition = ''; // Fallback to CSS rules
-        mobileTrigger.style.width = `${newWidth}px`;
-        
-        // 8. Clean up inline width after animation completes so it can naturally flex
-        setTimeout(() => {
-          mobileTrigger.style.width = '';
-        }, 300);
+        if (document.startViewTransition) {
+          document.startViewTransition(() => {
+            triggerIcon.src = activeIcon.src;
+            triggerLabel.textContent = activeLabel.textContent;
+          });
+        } else {
+          triggerIcon.src = activeIcon.src;
+          triggerLabel.textContent = activeLabel.textContent;
+        }
       }
     }
   }
@@ -89,7 +68,7 @@ export function switchView(targetView) {
  */
 export function initNavigation() {
   // Navigation menu items click
-  dom.navItems.forEach(item => {
+  document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
       const target = item.getAttribute('data-target');
       if (target) switchView(target);

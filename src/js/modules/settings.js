@@ -3,7 +3,6 @@
  * LocalStorage persistence, factory calibration reset, simulated PLC network ping, and toast feedback.
  */
 
-import { dom } from '../utils/dom.js';
 import { STORAGE_KEY } from '../config/constants.js';
 import { switchView } from './navigation.js';
 import { startTour } from './tour.js';
@@ -15,14 +14,14 @@ let toastTimer = null;
  * @param {string} message
  */
 export function showToast(message) {
-  if (!dom.settingsToast) return;
-  const msgEl = dom.settingsToast.querySelector('.toast-message');
+  if (!document.getElementById('settings-toast')) return;
+  const msgEl = document.getElementById('settings-toast').querySelector('.toast-message');
   if (msgEl && message) msgEl.textContent = message;
 
-  dom.settingsToast.classList.add('show');
+  document.getElementById('settings-toast').classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
-    if (dom.settingsToast) dom.settingsToast.classList.remove('show');
+    if (document.getElementById('settings-toast')) document.getElementById('settings-toast').classList.remove('show');
     toastTimer = null;
   }, 3200);
 }
@@ -72,8 +71,8 @@ export function loadSettings() {
  * Resets settings form to factory defaults and provides feedback toast.
  */
 export function resetSettings() {
-  if (dom.settingsForm) {
-    dom.settingsForm.reset();
+  if (document.getElementById('hmi-settings-form')) {
+    document.getElementById('hmi-settings-form').reset();
     showToast('Settings restored to factory calibration defaults.');
   }
 }
@@ -82,14 +81,14 @@ export function resetSettings() {
  * Simulates network ping to industrial PLC gateway with latency feedback.
  */
 export function testNetwork() {
-  if (dom.networkResult) {
-    dom.networkResult.textContent = 'Pinging PLC gateway...';
-    dom.networkResult.style.color = '#38bdf8';
+  if (document.getElementById('network-ping-result')) {
+    document.getElementById('network-ping-result').textContent = 'Pinging PLC gateway...';
+    document.getElementById('network-ping-result').style.color = '#38bdf8';
 
     setTimeout(() => {
-      if (dom.networkResult) {
-        dom.networkResult.textContent = 'Connected (Ping: 1.8ms | OPC UA OK)';
-        dom.networkResult.style.color = '#10b981';
+      if (document.getElementById('network-ping-result')) {
+        document.getElementById('network-ping-result').textContent = 'Connected (Ping: 1.8ms | OPC UA OK)';
+        document.getElementById('network-ping-result').style.color = '#10b981';
       }
     }, 700);
   }
@@ -100,11 +99,11 @@ export function testNetwork() {
  */
 export function initSettings() {
   loadSettings();
-  if (dom.btnSaveSettings) dom.btnSaveSettings.addEventListener('click', saveSettings);
-  if (dom.btnResetSettings) dom.btnResetSettings.addEventListener('click', resetSettings);
-  if (dom.btnTestNetwork) dom.btnTestNetwork.addEventListener('click', testNetwork);
-  if (dom.btnResetTour) {
-    dom.btnResetTour.addEventListener('click', () => {
+  if (document.getElementById('btn-save-settings')) document.getElementById('btn-save-settings').addEventListener('click', saveSettings);
+  if (document.getElementById('btn-reset-settings')) document.getElementById('btn-reset-settings').addEventListener('click', resetSettings);
+  if (document.getElementById('btn-test-network')) document.getElementById('btn-test-network').addEventListener('click', testNetwork);
+  if (document.getElementById('btn-reset-tour')) {
+    document.getElementById('btn-reset-tour').addEventListener('click', () => {
       localStorage.removeItem('tourCompleted');
       showToast('Restarting tour...', 'success');
       

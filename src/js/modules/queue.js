@@ -3,7 +3,6 @@
  * Queue table rendering, item reordering, job deletion, quick additions, and modal dispatch scheduling.
  */
 
-import { dom } from '../utils/dom.js';
 import { state } from '../state/store.js';
 import { showToast } from './settings.js';
 import { switchView } from './navigation.js';
@@ -12,8 +11,8 @@ import { switchView } from './navigation.js';
  * Re-renders the job queue table rows based on state.queue array.
  */
 export function renderQueueTable() {
-  if (!dom.queueTableBody) return;
-  dom.queueTableBody.innerHTML = '';
+  if (!document.getElementById('queue-table-body')) return;
+  document.getElementById('queue-table-body').innerHTML = '';
 
   state.queue.forEach((item, index) => {
     const tr = document.createElement('tr');
@@ -41,11 +40,11 @@ export function renderQueueTable() {
         <button class="table-action-btn delete" title="Cancel Job" onclick="window.HMI.deleteQueueItem(${index})">✕</button>
       </td>
     `;
-    dom.queueTableBody.appendChild(tr);
+    document.getElementById('queue-table-body').appendChild(tr);
   });
 
-  if (dom.queueBadge) {
-    dom.queueBadge.textContent = `${state.queue.length} Jobs Queued`;
+  if (document.getElementById('queue-count-badge')) {
+    document.getElementById('queue-count-badge').textContent = `${state.queue.length} Jobs Queued`;
   }
 }
 
@@ -99,14 +98,14 @@ export function addQueueJob() {
  * Opens the Job Creation modal overlay.
  */
 export function openModal() {
-  if (dom.modal) dom.modal.classList.add('show');
+  if (document.getElementById('job-creation-modal')) document.getElementById('job-creation-modal').classList.add('show');
 }
 
 /**
  * Closes the Job Creation modal overlay.
  */
 export function closeModal() {
-  if (dom.modal) dom.modal.classList.remove('show');
+  if (document.getElementById('job-creation-modal')) document.getElementById('job-creation-modal').classList.remove('show');
 }
 
 /**
@@ -115,9 +114,9 @@ export function closeModal() {
 export function submitJob() {
   const scheduleEl = document.querySelector('input[name="job-schedule"]:checked');
   const schedule = scheduleEl ? scheduleEl.value : 'queue-last';
-  const standard = dom.jobStandardInput ? dom.jobStandardInput.value : 'Unknown Standard';
-  const qty = dom.jobQtyInput ? dom.jobQtyInput.value : '6';
-  const priority = dom.jobPriorityInput ? dom.jobPriorityInput.value : 'normal';
+  const standard = document.getElementById('new-job-standard') ? document.getElementById('new-job-standard').value : 'Unknown Standard';
+  const qty = document.getElementById('new-job-qty') ? document.getElementById('new-job-qty').value : '6';
+  const priority = document.getElementById('new-job-priority') ? document.getElementById('new-job-priority').value : 'normal';
 
   if (schedule === 'run') {
     showToast(`Started new job: ${standard}`);
@@ -141,7 +140,7 @@ export function submitJob() {
       state.queue.push(newJob);
       showToast(`Added JOB-2026-0${nextNum} to end of queue.`);
     } else if (schedule === 'queue-custom') {
-      let pos = dom.jobCustomPosInput ? parseInt(dom.jobCustomPosInput.value, 10) : 1;
+      let pos = document.getElementById('new-job-custom-pos') ? parseInt(document.getElementById('new-job-custom-pos').value, 10) : 1;
       if (isNaN(pos) || pos < 1) pos = 1;
 
       let insertIdx = pos - 1;
@@ -161,15 +160,15 @@ export function submitJob() {
  * Binds queue controls and modal event listeners.
  */
 export function initQueue() {
-  if (dom.btnAddQueueJob) dom.btnAddQueueJob.addEventListener('click', addQueueJob);
-  if (dom.btnSidebarCreate) dom.btnSidebarCreate.addEventListener('click', openModal);
+  if (document.getElementById('btn-add-queue-job')) document.getElementById('btn-add-queue-job').addEventListener('click', addQueueJob);
+  if (document.getElementById('btn-sidebar-create')) document.getElementById('btn-sidebar-create').addEventListener('click', openModal);
   const topbarCreate = document.getElementById('btn-topbar-create');
   if (topbarCreate) topbarCreate.addEventListener('click', openModal);
-  if (dom.btnCloseModal) dom.btnCloseModal.addEventListener('click', closeModal);
-  if (dom.btnCancelJob) dom.btnCancelJob.addEventListener('click', closeModal);
-  if (dom.btnSubmitJob) dom.btnSubmitJob.addEventListener('click', submitJob);
-  if (dom.btnSidebarRun) {
-    dom.btnSidebarRun.addEventListener('click', () => {
+  if (document.getElementById('btn-close-modal')) document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+  if (document.getElementById('btn-cancel-job')) document.getElementById('btn-cancel-job').addEventListener('click', closeModal);
+  if (document.getElementById('btn-submit-job')) document.getElementById('btn-submit-job').addEventListener('click', submitJob);
+  if (document.getElementById('btn-sidebar-run')) {
+    document.getElementById('btn-sidebar-run').addEventListener('click', () => {
       showToast('New job execution started.', 'success');
       switchView('current-job');
     });

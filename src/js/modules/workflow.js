@@ -3,7 +3,6 @@
  * 4-stage pipeline, 12 substeps, cycle progress calculations, and machine pause/e-stop control.
  */
 
-import { dom } from '../utils/dom.js';
 import { state } from '../state/store.js';
 import { formatDuration, formatMSS } from '../utils/formatters.js';
 
@@ -143,13 +142,13 @@ export function prevStep() {
  */
 export function togglePause() {
   state.isPaused = !state.isPaused;
-  if (dom.btnPauseJob) {
-    dom.btnPauseJob.innerHTML = state.isPaused ? '<span>RESUME</span>' : '<span>STOP</span>';
-    dom.btnPauseJob.className = state.isPaused ? 'btn btn-sm btn-resume' : 'btn btn-sm btn-noisy-stop';
+  if (document.getElementById('btn-pause-job')) {
+    document.getElementById('btn-pause-job').innerHTML = state.isPaused ? '<span>RESUME</span>' : '<span>STOP</span>';
+    document.getElementById('btn-pause-job').className = state.isPaused ? 'btn btn-sm btn-resume' : 'btn btn-sm btn-noisy-stop';
   }
-  if (dom.machineBadge) {
-    dom.machineBadge.textContent = state.isPaused ? 'PAUSED' : 'PROCESSING';
-    dom.machineBadge.className = state.isPaused ? 'badge badge-warning' : 'badge badge-success';
+  if (document.getElementById('machine-state-badge')) {
+    document.getElementById('machine-state-badge').textContent = state.isPaused ? 'PAUSED' : 'PROCESSING';
+    document.getElementById('machine-state-badge').className = state.isPaused ? 'badge badge-warning' : 'badge badge-success';
   }
 }
 
@@ -160,26 +159,26 @@ export function triggerEstop() {
   state.isEstop = !state.isEstop;
   if (state.isEstop) {
     state.isPaused = true;
-    if (dom.machineBadge) {
-      dom.machineBadge.textContent = 'EMERGENCY STOP';
-      dom.machineBadge.className = 'badge badge-danger';
+    if (document.getElementById('machine-state-badge')) {
+      document.getElementById('machine-state-badge').textContent = 'EMERGENCY STOP';
+      document.getElementById('machine-state-badge').className = 'badge badge-danger';
     }
-    if (dom.btnEstop) {
-      dom.btnEstop.style.boxShadow = '0 0 16px rgba(239, 68, 68, 1)';
-      dom.btnEstop.textContent = 'RESET STOP';
+    if (document.getElementById('btn-estop')) {
+      document.getElementById('btn-estop').style.boxShadow = '0 0 16px rgba(239, 68, 68, 1)';
+      document.getElementById('btn-estop').textContent = 'RESET STOP';
     }
     if (typeof alert === 'function') {
       alert('EMERGENCY STOP ACTIVATED: Cutter, feeder motors, and pneumatic clamps safely disengaged.');
     }
   } else {
     state.isPaused = false;
-    if (dom.machineBadge) {
-      dom.machineBadge.textContent = 'PROCESSING';
-      dom.machineBadge.className = 'badge badge-success';
+    if (document.getElementById('machine-state-badge')) {
+      document.getElementById('machine-state-badge').textContent = 'PROCESSING';
+      document.getElementById('machine-state-badge').className = 'badge badge-success';
     }
-    if (dom.btnEstop) {
-      dom.btnEstop.style.boxShadow = '';
-      dom.btnEstop.textContent = 'E-STOP';
+    if (document.getElementById('btn-estop')) {
+      document.getElementById('btn-estop').style.boxShadow = '';
+      document.getElementById('btn-estop').textContent = 'E-STOP';
     }
   }
 }
@@ -190,8 +189,8 @@ export function triggerEstop() {
 export function updateCycleProgress() {
   state.uptimeSeconds += 1;
   const formatted = formatDuration(state.uptimeSeconds);
-  if (dom.headerUptime) dom.headerUptime.textContent = formatted;
-  if (dom.currentJobUptime) dom.currentJobUptime.textContent = formatted;
+  if (document.getElementById('header-uptime')) document.getElementById('header-uptime').textContent = formatted;
+  if (document.getElementById('current-job-uptime')) document.getElementById('current-job-uptime').textContent = formatted;
 
   // Advance cycle elapsed if running
   if (!state.isPaused && !state.isEstop) {
@@ -202,10 +201,10 @@ export function updateCycleProgress() {
     const pct = Math.min(100, Math.round((state.cycleElapsedSeconds / state.cycleTotalSeconds) * 100));
     const remaining = Math.max(0, state.cycleTotalSeconds - state.cycleElapsedSeconds);
     
-    if (dom.progressPercent) dom.progressPercent.textContent = `${pct}%`;
-    if (dom.progressFill) dom.progressFill.style.width = `${pct}%`;
-    if (dom.elapsedTime) dom.elapsedTime.textContent = formatMSS(state.cycleElapsedSeconds);
-    if (dom.etaTime) dom.etaTime.textContent = formatMSS(remaining);
+    if (document.getElementById('job-progress-percent')) document.getElementById('job-progress-percent').textContent = `${pct}%`;
+    if (document.getElementById('job-progress-fill')) document.getElementById('job-progress-fill').style.width = `${pct}%`;
+    if (document.getElementById('job-elapsed-time')) document.getElementById('job-elapsed-time').textContent = formatMSS(state.cycleElapsedSeconds);
+    if (document.getElementById('job-eta-time')) document.getElementById('job-eta-time').textContent = formatMSS(remaining);
   }
 }
 
@@ -213,8 +212,8 @@ export function updateCycleProgress() {
  * Binds workflow button event listeners.
  */
 export function initWorkflow() {
-  if (dom.btnNextStep) dom.btnNextStep.addEventListener('click', advanceStep);
-  if (dom.btnPrevStep) dom.btnPrevStep.addEventListener('click', prevStep);
-  if (dom.btnPauseJob) dom.btnPauseJob.addEventListener('click', togglePause);
-  if (dom.btnEstop) dom.btnEstop.addEventListener('click', triggerEstop);
+  if (document.getElementById('btn-next-step')) document.getElementById('btn-next-step').addEventListener('click', advanceStep);
+  if (document.getElementById('btn-prev-step')) document.getElementById('btn-prev-step').addEventListener('click', prevStep);
+  if (document.getElementById('btn-pause-job')) document.getElementById('btn-pause-job').addEventListener('click', togglePause);
+  if (document.getElementById('btn-estop')) document.getElementById('btn-estop').addEventListener('click', triggerEstop);
 }
